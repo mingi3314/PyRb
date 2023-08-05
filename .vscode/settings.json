@@ -1,0 +1,19 @@
+{
+  "editor.formatOnSave": true,
+  "python.languageServer": "Pylance",
+  "python.analysis.typeCheckingMode": "off",
+  "python.formatting.provider": "none",
+  "python.linting.mypyEnabled": true,
+  "python.linting.enabled": true,
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    },
+  },
+  "git.branchProtection": [
+    "main"
+  ],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true,
+}
