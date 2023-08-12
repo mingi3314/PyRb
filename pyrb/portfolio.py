@@ -39,8 +39,8 @@ class EbestPortfolio(Portfolio):
         return [position.symbol for position in self.positions]
 
 
-def portfolio_factory(portfolio_type: str) -> Portfolio:
-    if portfolio_type == "ebest":
+def portfolio_factory(brokerage_name: str) -> Portfolio:
+    if brokerage_name == "ebest":
         return EbestPortfolio()
     else:
         raise ValueError("Invalid portfolio type")
