@@ -5,8 +5,13 @@ description = "Python Rebalancer"
 authors = ["Minki Kim <mingi3314@gmail.com>"]
 readme = "README.md"
 
+[tool.poetry.scripts]
+myapp = "pyrb.main:cli"
+
 [tool.poetry.dependencies]
 python = "^3.11"
+click = "^8.1.6"
+pydantic = "^2.1.1"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "0.0.282"
