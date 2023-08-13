@@ -25,6 +25,10 @@ class Portfolio(abc.ABC):
     def holding_symbols(self) -> list[str]:
         ...
 
+    @abc.abstractmethod
+    def get_position(self, symbol: str) -> Position | None:
+        ...
+
 
 class EbestPortfolio(Portfolio):
     def __init__(self) -> None:
@@ -37,6 +41,9 @@ class EbestPortfolio(Portfolio):
     @property
     def holding_symbols(self) -> list[str]:
         return [position.symbol for position in self.positions]
+
+    def get_position(self, symbol: str) -> Position | None:
+        ...
 
 
 def portfolio_factory(brokerage_name: str) -> Portfolio:
