@@ -85,8 +85,3 @@ class EbestAPIClient:
         response = requests.post(url, verify=False, headers=headers, params=params)
         response.raise_for_status()
         return response.json()["access_token"]
-
-
-client = EbestAPIClient()
-print(client.get_portfolio().json())
-print(client.fetch_current_prices(["005930", "000020"]).json())
