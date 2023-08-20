@@ -2,7 +2,8 @@ import pytest
 
 from pyrb.fetcher import CurrentPrice, PriceFetcher
 from pyrb.main import RebalanceContext
-from pyrb.order_manager import Order, OrderManager
+from pyrb.order import Order
+from pyrb.order_manager import OrderManager
 from pyrb.portfolio import Portfolio, Position
 
 

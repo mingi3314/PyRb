@@ -2,7 +2,7 @@ from click.testing import CliRunner
 from pytest_mock import MockerFixture
 
 from pyrb.main import RebalanceContext, cli
-from pyrb.order_manager import Order, OrderType
+from pyrb.order import Order, OrderType
 
 
 def test_sut_rebalances(fake_rebalance_context: RebalanceContext, mocker: MockerFixture) -> None:
@@ -11,7 +11,7 @@ def test_sut_rebalances(fake_rebalance_context: RebalanceContext, mocker: Mocker
     # given
     runner = CliRunner()
 
-    mocker.patch("pyrb.main.RebalanceContext", return_value=fake_rebalance_context)
+    mocker.patch("pyrb.main._create_rebalance_context", return_value=fake_rebalance_context)
 
     spy = mocker.spy(fake_rebalance_context.order_manager, "place_order")
 
@@ -49,7 +49,7 @@ def test_sut_rebalances_with_only_buy_orders(
     # given
     runner = CliRunner()
 
-    mocker.patch("pyrb.main.RebalanceContext", return_value=fake_rebalance_context)
+    mocker.patch("pyrb.main._create_rebalance_context", return_value=fake_rebalance_context)
 
     # when
     result = runner.invoke(cli, ["rebalance", "--investment-amount", "20000"])
@@ -65,7 +65,7 @@ def test_sut_rebalances_with_only_sell_order(
     # given
     runner = CliRunner()
 
-    mocker.patch("pyrb.main.RebalanceContext", return_value=fake_rebalance_context)
+    mocker.patch("pyrb.main._create_rebalance_context", return_value=fake_rebalance_context)
 
     # when
     result = runner.invoke(cli, ["rebalance", "--investment-amount", "1000"])
@@ -81,7 +81,7 @@ def test_sut_stops_rebalancing_with_disallowance_from_user(
     # given
     runner = CliRunner()
 
-    mocker.patch("pyrb.main.RebalanceContext", return_value=fake_rebalance_context)
+    mocker.patch("pyrb.main._create_rebalance_context", return_value=fake_rebalance_context)
 
     # when
     result = runner.invoke(cli, ["rebalance", "--investment-amount", "1000"], input="n\n")
