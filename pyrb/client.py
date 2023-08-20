@@ -1,8 +1,15 @@
+import abc
 from typing import Any
 
 import requests
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from requests import Response
+
+
+class BrokerageAPIClient(abc.ABC):
+    @abc.abstractmethod
+    def send_request(self, method: str, path: str, **kwargs: Any) -> Response:
+        ...
 
 
 class EbestConfig(BaseSettings):
@@ -13,47 +20,14 @@ class EbestConfig(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_prefix="EBEST_")
 
 
-class EbestAPIClient:
+class EbestAPIClient(BrokerageAPIClient):
     BASE_URL = "https://openapi.ebestsec.co.kr:8080"
     config = EbestConfig()
 
     def __init__(self) -> None:
         self._access_token = self._issue_access_token()
 
-    def fetch_current_prices(self, symbols: list[str]) -> Response:
-        path = "stock/market-data"
-        content_type = "application/json; charset=UTF-8"
-
-        headers = {"content-type": content_type, "tr_cd": "t8407", "tr_cont": "N"}
-        body = {
-            "t8407InBlock": {
-                "nrec": len(symbols),  # 조회할 종목 수
-                "shcode": "".join(symbols),  # 종목코드
-            }
-        }
-
-        response = self._make_request("POST", path, headers=headers, json=body)
-        return response
-
-    def get_portfolio(self) -> Response:
-        path = "stock/accno"
-        content_type = "application/json; charset=UTF-8"
-
-        headers = {"content-type": content_type, "tr_cd": "t0424", "tr_cont": "N"}
-        body = {
-            "t0424InBlock": {
-                "prcgb": "",
-                "chegb": "",
-                "dangb": "",
-                "charge": "",
-                "cts_expcode": "",
-            }
-        }
-
-        response = self._make_request("POST", path, headers=headers, json=body)
-        return response
-
-    def _make_request(self, method: str, path: str, **kwargs: Any) -> Response:
+    def send_request(self, method: str, path: str, **kwargs: Any) -> Response:
         URL = f"{self.BASE_URL}/{path}"
         headers = kwargs.get("headers", {})
         headers["authorization"] = f"Bearer {self._access_token}"
@@ -85,3 +59,10 @@ class EbestAPIClient:
         response = requests.post(url, verify=False, headers=headers, params=params)
         response.raise_for_status()
         return response.json()["access_token"]
+
+
+def brokerage_api_client_factory(brokerage_name: str) -> BrokerageAPIClient:
+    if brokerage_name == "ebest":
+        return EbestAPIClient()
+    else:
+        raise NotImplementedError(f"Unsupported brokerage: {brokerage_name}")

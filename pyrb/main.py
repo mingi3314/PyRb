@@ -2,8 +2,10 @@ from typing import Literal, cast
 
 import click
 
+from pyrb.client import brokerage_api_client_factory
 from pyrb.fetcher import CurrentPrice, PriceFetcher, price_fetcher_factory
-from pyrb.order_manager import Order, OrderManager, OrderType, order_manager_factory
+from pyrb.order import Order, OrderType
+from pyrb.order_manager import OrderManager, order_manager_factory
 from pyrb.portfolio import Portfolio, portfolio_factory
 
 
@@ -31,11 +33,8 @@ class RebalanceContext:
 @click.group()
 @click.pass_context
 def cli(ctx: click.Context, brokerage_name: str = "ebest") -> None:
-    portfolio = portfolio_factory(brokerage_name)
-    price_fetcher = price_fetcher_factory(brokerage_name)
-    order_manager = order_manager_factory(brokerage_name)
-
-    ctx.obj = RebalanceContext(portfolio, price_fetcher, order_manager)
+    rebalance_context = _create_rebalance_context(brokerage_name)
+    ctx.obj = rebalance_context
 
 
 @cli.command()
@@ -50,6 +49,17 @@ def rebalance(context: RebalanceContext, investment_amount: float) -> None:
         _place_orders(context, orders)
     else:
         click.echo("No orders were placed")
+
+
+def _create_rebalance_context(brokerage_name: str) -> RebalanceContext:
+    brokerage_api_client = brokerage_api_client_factory(brokerage_name)
+
+    portfolio = portfolio_factory(brokerage_api_client)
+    price_fetcher = price_fetcher_factory(brokerage_api_client)
+    order_manager = order_manager_factory(brokerage_api_client)
+
+    rebalance_context = RebalanceContext(portfolio, price_fetcher, order_manager)
+    return rebalance_context
 
 
 def _get_weight_by_stock(portfolio: Portfolio) -> dict[str, float]:
