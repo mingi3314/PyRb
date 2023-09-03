@@ -1,6 +1,7 @@
 from click.testing import CliRunner
 from pytest_mock import MockerFixture
 
+from pyrb.exceptions import InsufficientFundsException
 from pyrb.main import RebalanceContext, cli
 from pyrb.order import Order, OrderType
 
@@ -89,3 +90,19 @@ def test_sut_stops_rebalancing_with_disallowance_from_user(
     # then
     assert result.exit_code == 0
     assert "No orders were placed" in result.output
+
+
+def test_sut_stops_rebalancing_with_insufficient_funds(
+    fake_rebalance_context: RebalanceContext, mocker: MockerFixture
+) -> None:
+    # given
+    runner = CliRunner()
+
+    mocker.patch("pyrb.main._create_rebalance_context", return_value=fake_rebalance_context)
+
+    # when
+    result = runner.invoke(cli, ["rebalance", "--investment-amount", "999999999"], input="y\n")
+
+    # then
+    assert result.exit_code == 1
+    assert result.exc_info[0] == InsufficientFundsException

@@ -1,12 +1,16 @@
 from typing import Literal, cast
 
 import click
+import typer
 
 from pyrb.client import brokerage_api_client_factory
+from pyrb.exceptions import InsufficientFundsException
 from pyrb.fetcher import CurrentPrice, PriceFetcher, price_fetcher_factory
 from pyrb.order import Order, OrderType
 from pyrb.order_manager import OrderManager, order_manager_factory
 from pyrb.portfolio import Portfolio, portfolio_factory
+
+app = typer.Typer()
 
 
 class RebalanceContext:
@@ -41,6 +45,8 @@ def cli(ctx: click.Context, brokerage_name: str = "ebest") -> None:
 @click.option("--investment-amount", type=float, prompt="Enter the total investment amount")
 @click.pass_obj
 def rebalance(context: RebalanceContext, investment_amount: float) -> None:
+    _validate_investment_amount(context, investment_amount)
+
     weight_by_stock = _get_weight_by_stock(context.portfolio)
     orders = _prepare_orders(context, investment_amount, weight_by_stock)
     user_confirmation = _confirm_orders_to_user(context, orders)
@@ -49,6 +55,13 @@ def rebalance(context: RebalanceContext, investment_amount: float) -> None:
         _place_orders(context, orders)
     else:
         click.echo("No orders were placed")
+
+
+def _validate_investment_amount(context: RebalanceContext, investment_amount: float) -> None:
+    if investment_amount > context.portfolio.total_asset:
+        raise InsufficientFundsException(
+            f"Insufficient funds. The amount of your total asset is {context.portfolio.total_asset}"
+        )
 
 
 def _create_rebalance_context(brokerage_name: str) -> RebalanceContext:

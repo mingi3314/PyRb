@@ -20,6 +20,12 @@ class Portfolio(abc.ABC):
 
     @property
     @abc.abstractmethod
+    def total_asset(self) -> PositiveFloat:
+        """포트폴리오의 총 자산을 조회합니다."""
+        ...
+
+    @property
+    @abc.abstractmethod
     def positions(self) -> list[Position]:
         """보유중인 포지션 목록을 조회합니다.
 
@@ -54,6 +60,13 @@ class Portfolio(abc.ABC):
 class EbestPortfolio(Portfolio):
     def __init__(self, api_client: EbestAPIClient) -> None:
         self._api_client = api_client
+
+    @property
+    def total_asset(self) -> PositiveFloat:
+        response = self._fetch_portfolio()
+        res = response.json()
+
+        return res["t0424OutBlock"]["sunamt"]
 
     @property
     def positions(self) -> list[Position]:
