@@ -1,7 +1,6 @@
 from typing import Literal, cast
 
 import click
-import typer
 
 from pyrb.client import brokerage_api_client_factory
 from pyrb.exceptions import InsufficientFundsException
@@ -9,8 +8,6 @@ from pyrb.fetcher import CurrentPrice, PriceFetcher, price_fetcher_factory
 from pyrb.order import Order, OrderType
 from pyrb.order_manager import OrderManager, order_manager_factory
 from pyrb.portfolio import Portfolio, portfolio_factory
-
-app = typer.Typer()
 
 
 class RebalanceContext:
