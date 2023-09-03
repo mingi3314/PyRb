@@ -6,7 +6,7 @@ authors = ["Minki Kim <mingi3314@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.scripts]
-pyrb = "pyrb.main:cli"
+pyrb = "pyrb.main:app"
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -14,6 +14,7 @@ click = "^8.1.6"
 pydantic = "^2.1.1"
 requests = "^2.31.0"
 pydantic-settings = "^2.0.3"
+typer = {extras = ["all"], version = "^0.9.0"}
 
 [tool.poetry.group.dev.dependencies]
 ruff = "0.0.282"

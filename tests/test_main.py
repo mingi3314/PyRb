@@ -1,8 +1,8 @@
-from click.testing import CliRunner
 from pytest_mock import MockerFixture
+from typer.testing import CliRunner
 
 from pyrb.exceptions import InsufficientFundsException
-from pyrb.main import RebalanceContext, cli
+from pyrb.main import RebalanceContext, app
 from pyrb.order import Order, OrderType
 
 
@@ -17,7 +17,7 @@ def test_sut_rebalances(fake_rebalance_context: RebalanceContext, mocker: Mocker
     spy = mocker.spy(fake_rebalance_context.order_manager, "place_order")
 
     # when
-    result = runner.invoke(cli, ["rebalance", "--investment-amount", "1000"], input="y\n")
+    result = runner.invoke(app, ["rebalance", "--investment-amount", "1000"], input="y\n")
 
     # then
     assert result.exit_code == 0
@@ -53,7 +53,7 @@ def test_sut_rebalances_with_only_buy_orders(
     mocker.patch("pyrb.main._create_rebalance_context", return_value=fake_rebalance_context)
 
     # when
-    result = runner.invoke(cli, ["rebalance", "--investment-amount", "20000"])
+    result = runner.invoke(app, ["rebalance", "--investment-amount", "20000"])
 
     # then
     assert "BUY" in result.output
@@ -69,7 +69,7 @@ def test_sut_rebalances_with_only_sell_order(
     mocker.patch("pyrb.main._create_rebalance_context", return_value=fake_rebalance_context)
 
     # when
-    result = runner.invoke(cli, ["rebalance", "--investment-amount", "1000"])
+    result = runner.invoke(app, ["rebalance", "--investment-amount", "1000"])
 
     # then
     assert "SELL" in result.output
@@ -85,7 +85,7 @@ def test_sut_stops_rebalancing_with_disallowance_from_user(
     mocker.patch("pyrb.main._create_rebalance_context", return_value=fake_rebalance_context)
 
     # when
-    result = runner.invoke(cli, ["rebalance", "--investment-amount", "1000"], input="n\n")
+    result = runner.invoke(app, ["rebalance", "--investment-amount", "1000"], input="n\n")
 
     # then
     assert result.exit_code == 0
@@ -101,7 +101,7 @@ def test_sut_stops_rebalancing_with_insufficient_funds(
     mocker.patch("pyrb.main._create_rebalance_context", return_value=fake_rebalance_context)
 
     # when
-    result = runner.invoke(cli, ["rebalance", "--investment-amount", "999999999"], input="y\n")
+    result = runner.invoke(app, ["rebalance", "--investment-amount", "999999999"], input="y\n")
 
     # then
     assert result.exit_code == 1

@@ -1,6 +1,7 @@
 from typing import Literal, cast
 
 import click
+import typer
 
 from pyrb.client import brokerage_api_client_factory
 from pyrb.exceptions import InsufficientFundsException
@@ -8,6 +9,8 @@ from pyrb.fetcher import CurrentPrice, PriceFetcher, price_fetcher_factory
 from pyrb.order import Order, OrderType
 from pyrb.order_manager import OrderManager, order_manager_factory
 from pyrb.portfolio import Portfolio, portfolio_factory
+
+app = typer.Typer()
 
 
 class RebalanceContext:
@@ -31,17 +34,18 @@ class RebalanceContext:
         return self._order_manager
 
 
-@click.group()
-@click.pass_context
-def cli(ctx: click.Context, brokerage_name: str = "ebest") -> None:
-    rebalance_context = _create_rebalance_context(brokerage_name)
-    ctx.obj = rebalance_context
+@app.callback()
+def callback() -> None:
+    """Rebalance your portfolio"""
+    ...
 
 
-@cli.command()
-@click.option("--investment-amount", type=float, prompt="Enter the total investment amount")
-@click.pass_obj
-def rebalance(context: RebalanceContext, investment_amount: float) -> None:
+@app.command()
+def rebalance(
+    investment_amount: float = typer.Option(..., prompt="Enter the total investment amount"),
+    brokerage_name: str = typer.Option("ebest", "--brokerage", "-b"),
+) -> None:
+    context = _create_rebalance_context(brokerage_name)
     _validate_investment_amount(context, investment_amount)
 
     weight_by_stock = _get_weight_by_stock(context.portfolio)
@@ -187,4 +191,4 @@ def _report_orders(successful_orders: list[Order], failed_orders: list[Order]) -
 
 
 if __name__ == "__main__":
-    cli()
+    app()
