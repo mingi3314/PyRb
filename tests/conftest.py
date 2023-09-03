@@ -12,6 +12,10 @@ class FakePortfolio(Portfolio):
         ...
 
     @property
+    def total_asset(self) -> float:
+        return 100000
+
+    @property
     def positions(self) -> list[Position]:
         return [
             Position(
