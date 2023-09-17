@@ -3,7 +3,7 @@ from typing import Literal, cast
 import click
 import typer
 
-from pyrb.client import brokerage_api_client_factory
+from pyrb.client import TradeMode, brokerage_api_client_factory
 from pyrb.exceptions import InsufficientFundsException
 from pyrb.fetcher import CurrentPrice, PriceFetcher, price_fetcher_factory
 from pyrb.order import Order, OrderType
@@ -44,8 +44,9 @@ def callback() -> None:
 def rebalance(
     investment_amount: float = typer.Option(..., prompt="Enter the total investment amount"),
     brokerage_name: str = typer.Option("ebest", "--brokerage", "-b"),
+    trade_mode: TradeMode = typer.Option(TradeMode.PAPER, "--trade-mode", "-t"),
 ) -> None:
-    context = _create_rebalance_context(brokerage_name)
+    context = _create_rebalance_context(brokerage_name, trade_mode)
     _validate_investment_amount(context, investment_amount)
 
     weight_by_stock = _get_weight_by_stock(context.portfolio)
@@ -65,8 +66,8 @@ def _validate_investment_amount(context: RebalanceContext, investment_amount: fl
         )
 
 
-def _create_rebalance_context(brokerage_name: str) -> RebalanceContext:
-    brokerage_api_client = brokerage_api_client_factory(brokerage_name)
+def _create_rebalance_context(brokerage_name: str, trade_mode: TradeMode) -> RebalanceContext:
+    brokerage_api_client = brokerage_api_client_factory(brokerage_name, trade_mode)
 
     portfolio = portfolio_factory(brokerage_api_client)
     price_fetcher = price_fetcher_factory(brokerage_api_client)

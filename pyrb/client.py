@@ -1,4 +1,5 @@
 import abc
+from enum import StrEnum
 from typing import Any
 
 import requests
@@ -17,14 +18,23 @@ class EbestConfig(BaseSettings):
     APP_KEY: str
     APP_SECRET: str
 
+    PAPER_APP_KEY: str
+    PAPER_APP_SECRET: str
+
     model_config = SettingsConfigDict(env_file=".env", env_prefix="EBEST_")
+
+
+class TradeMode(StrEnum):
+    REAL = "real"
+    PAPER = "paper"
 
 
 class EbestAPIClient(BrokerageAPIClient):
     BASE_URL = "https://openapi.ebestsec.co.kr:8080"
     config = EbestConfig()
 
-    def __init__(self) -> None:
+    def __init__(self, trade_mode: TradeMode = TradeMode.PAPER) -> None:
+        self._trade_mode = trade_mode
         self._access_token = self._issue_access_token()
 
     def send_request(self, method: str, path: str, **kwargs: Any) -> Response:
@@ -48,11 +58,19 @@ class EbestAPIClient(BrokerageAPIClient):
         path = "oauth2/token"
         url = f"{self.BASE_URL}/{path}"
 
+        match self._trade_mode:
+            case TradeMode.REAL:
+                app_key = self.config.APP_KEY
+                app_secret = self.config.APP_SECRET
+            case TradeMode.PAPER:
+                app_key = self.config.PAPER_APP_KEY
+                app_secret = self.config.PAPER_APP_SECRET
+
         headers = {"content-type": "application/x-www-form-urlencoded"}
         params = {
             "grant_type": "client_credentials",
-            "appkey": self.config.APP_KEY,
-            "appsecretkey": self.config.APP_SECRET,
+            "appkey": app_key,
+            "appsecretkey": app_secret,
             "scope": "oob",
         }
 
@@ -61,8 +79,8 @@ class EbestAPIClient(BrokerageAPIClient):
         return response.json()["access_token"]
 
 
-def brokerage_api_client_factory(brokerage_name: str) -> BrokerageAPIClient:
+def brokerage_api_client_factory(brokerage_name: str, trade_mode: TradeMode) -> BrokerageAPIClient:
     if brokerage_name == "ebest":
-        return EbestAPIClient()
+        return EbestAPIClient(trade_mode=trade_mode)
     else:
         raise NotImplementedError(f"Unsupported brokerage: {brokerage_name}")
