@@ -39,6 +39,13 @@ export EBEST_APP_KEY="your_app_key_here"
 export EBEST_APP_SECRET="your_app_secret_here"
 ```
 
+If you want to use the paper trade mode, set up the environmental variables as follows:
+
+```bash
+export EBEST_PAPER_APP_KEY="your_paper_app_key_here"
+export EBEST_PAPER_APP_SECRET="your_paper_app_secret_here"
+```
+
 Run the tool with:
 
 ```bash
