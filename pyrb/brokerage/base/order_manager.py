@@ -1,6 +1,5 @@
 import abc
 from enum import StrEnum
-from typing import Literal
 
 from pydantic import BaseModel
 
@@ -16,12 +15,28 @@ class OrderType(StrEnum):
     AFTER_HOURS_SINGLE = "AFTER_HOURS_SINGLE"  # 시간외단일가
 
 
+class OrderSide(StrEnum):
+    BUY = "BUY"
+    SELL = "SELL"
+
+
+class OrderStatus(StrEnum):
+    PENDING = "PENDING"
+    PLACED = "PLACED"
+    REJECTED = "REJECTED"
+    CANCELLED = "CANCELLED"
+
+
 class Order(BaseModel):
     symbol: str  # 종목코드
     price: int  # 주문가격
     quantity: int  # 주문수량
-    side: Literal["BUY", "SELL"]  # 매매구분
+    side: OrderSide  # 매매구분
     order_type: OrderType  # 주문유형
+    status: OrderStatus = OrderStatus.PENDING  # 주문상태
+
+    def __str__(self) -> str:
+        return f"{self.symbol}: {self.side} {self.quantity} shares @ {self.price}"
 
 
 class OrderManager(abc.ABC):
@@ -30,9 +45,18 @@ class OrderManager(abc.ABC):
 
     @abc.abstractmethod
     def place_order(self, order: Order) -> None:
-        """주문을 제출합니다.
+        """
+        Places an order with the brokerage. This method should be implemented by the
+        concrete class.
+        If the order fails to place, an OrderPlacementError should be raised.
 
         Args:
-            order: 주문 객체
+            order (Order): The order to place.
+
+        Returns:
+            None
+
+        Raises:
+            OrderPlacementError: If the order fails to place.
         """
         ...

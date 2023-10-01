@@ -10,7 +10,7 @@ class EbestPortfolio(Portfolio):
         self._api_client = api_client
 
     @property
-    def total_asset(self) -> PositiveFloat:
+    def total_value(self) -> PositiveFloat:
         response = self._fetch_portfolio()
         res = response.json()
 

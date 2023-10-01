@@ -1,7 +1,7 @@
 from pytest_mock import MockerFixture
 from typer.testing import CliRunner
 
-from pyrb.brokerage.base.order_manager import Order, OrderType
+from pyrb.brokerage.base.order_manager import Order, OrderSide, OrderStatus, OrderType
 from pyrb.brokerage.context import RebalanceContext
 from pyrb.controller import app
 from pyrb.exceptions import InsufficientFundsException
@@ -29,8 +29,9 @@ def test_sut_rebalances(fake_rebalance_context: RebalanceContext, mocker: Mocker
                 symbol="000660",
                 price=100,
                 quantity=95,
-                side="SELL",
+                side=OrderSide.SELL,
                 order_type=OrderType.MARKET,
+                status=OrderStatus.PLACED,
             ),
         ),
         mocker.call(
@@ -38,8 +39,9 @@ def test_sut_rebalances(fake_rebalance_context: RebalanceContext, mocker: Mocker
                 symbol="005930",
                 price=100,
                 quantity=70,
-                side="SELL",
+                side=OrderSide.SELL,
                 order_type=OrderType.MARKET,
+                status=OrderStatus.PLACED,
             ),
         ),
     ]

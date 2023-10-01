@@ -1,5 +1,8 @@
+from requests import HTTPError
+
 from pyrb.brokerage.base.order_manager import Order, OrderManager
 from pyrb.brokerage.ebest.client import EbestAPIClient
+from pyrb.exceptions import OrderPlacementError
 
 
 class EbestOrderManager(OrderManager):
@@ -39,4 +42,7 @@ class EbestOrderManager(OrderManager):
             }
         }
 
-        self._api_client.send_request("POST", path, headers=headers, json=body)
+        try:
+            self._api_client.send_request("POST", path, headers=headers, json=body)
+        except HTTPError as e:
+            raise OrderPlacementError(e)

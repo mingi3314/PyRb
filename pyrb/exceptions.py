@@ -6,5 +6,9 @@ class InsufficientFundsException(PyRbException):
     pass
 
 
-class PaperTradingSettingException(PyRbException):
+class PaperTradingSettingError(PyRbException):
+    pass
+
+
+class OrderPlacementError(PyRbException):
     pass

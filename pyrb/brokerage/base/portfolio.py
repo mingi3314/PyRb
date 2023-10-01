@@ -17,38 +17,44 @@ class Portfolio(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def total_asset(self) -> PositiveFloat:
-        """포트폴리오의 총 자산을 조회합니다."""
+    def total_value(self) -> PositiveFloat:
+        """Calculates the total value of the portfolio.
+        total value = cash + sum of the market value of all positions
+
+        Returns:
+            PositiveFloat: The total value of the portfolio.
+        """
         ...
 
     @property
     @abc.abstractmethod
     def positions(self) -> list[Position]:
-        """보유중인 포지션 목록을 조회합니다.
+        """Returns a list of all positions in the portfolio.
 
         Returns:
-            보유중인 포지션 목록
+            list[Position]: A list of all positions in the portfolio.
         """
         ...
 
     @property
     @abc.abstractmethod
     def holding_symbols(self) -> list[str]:
-        """보유중인 종목코드를 조회합니다.
+        """Returns a list of symbols for all positions in the portfolio.
 
         Returns:
-            보유중인 종목코드 리스트
+            list[str]: A list of symbols for all positions in the portfolio.
         """
         ...
 
     @abc.abstractmethod
     def get_position(self, symbol: str) -> Position | None:
-        """포지션 정보를 조회합니다.
+        """Returns the position object for the given symbol.
 
         Args:
-            symbol: 종목코드
+            symbol : The symbol of the position to retrieve.
 
         Returns:
-            포지션 정보. 종목코드에 해당하는 포지션이 없으면 None을 반환합니다.
+            Position | None: The position object for the given symbol,
+                             if the symbol is not found, None will be returned.
         """
         ...

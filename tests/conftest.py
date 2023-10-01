@@ -11,7 +11,7 @@ class FakePortfolio(Portfolio):
         ...
 
     @property
-    def total_asset(self) -> float:
+    def total_value(self) -> float:
         return 100000
 
     @property
