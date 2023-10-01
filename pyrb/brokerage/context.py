@@ -1,7 +1,7 @@
-from pyrb.repositories.client import TradeMode, brokerage_api_client_factory
-from pyrb.repositories.fetcher import PriceFetcher, price_fetcher_factory
-from pyrb.repositories.order_manager import OrderManager, order_manager_factory
-from pyrb.repositories.portfolio import Portfolio, portfolio_factory
+from pyrb.brokerage.client import TradeMode, brokerage_api_client_factory
+from pyrb.brokerage.fetcher import PriceFetcher, price_fetcher_factory
+from pyrb.brokerage.order_manager import OrderManager, order_manager_factory
+from pyrb.brokerage.portfolio import Portfolio, portfolio_factory
 
 
 class RebalanceContext:

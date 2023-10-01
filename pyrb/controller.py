@@ -1,9 +1,9 @@
 import click
 import typer
 
-from pyrb.repositories.client import TradeMode
-from pyrb.repositories.context import RebalanceContext, create_rebalance_context
-from pyrb.repositories.order_manager import Order
+from pyrb.brokerage.client import TradeMode
+from pyrb.brokerage.context import RebalanceContext, create_rebalance_context
+from pyrb.brokerage.order_manager import Order
 from pyrb.service import (
     get_weight_by_stock,
     prepare_orders,

@@ -4,7 +4,7 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-from pyrb.repositories.client import BrokerageAPIClient, EbestAPIClient
+from pyrb.brokerage.client import BrokerageAPIClient, EbestAPIClient
 
 
 class OrderType(StrEnum):

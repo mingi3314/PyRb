@@ -1,13 +1,13 @@
 from typing import Literal, cast
 
-from pyrb.exceptions import InsufficientFundsException
-from pyrb.repositories.context import RebalanceContext
-from pyrb.repositories.fetcher import CurrentPrice
-from pyrb.repositories.order_manager import (
+from pyrb.brokerage.context import RebalanceContext
+from pyrb.brokerage.fetcher import CurrentPrice
+from pyrb.brokerage.order_manager import (
     Order,
     OrderType,
 )
-from pyrb.repositories.portfolio import Portfolio
+from pyrb.brokerage.portfolio import Portfolio
+from pyrb.exceptions import InsufficientFundsException
 
 
 def validate_investment_amount(context: RebalanceContext, investment_amount: float) -> None:
