@@ -2,7 +2,6 @@
   "editor.formatOnSave": true,
   "python.languageServer": "Pylance",
   "python.analysis.typeCheckingMode": "off",
-  "python.formatting.provider": "none",
   "python.linting.mypyEnabled": true,
   "python.linting.enabled": true,
   "[python]": {
@@ -11,6 +10,8 @@
       "source.organizeImports": true
     },
   },
+  "black-formatter.importStrategy": "fromEnvironment",
+  "ruff.importStrategy": "fromEnvironment",
   "git.branchProtection": [
     "main"
   ],
