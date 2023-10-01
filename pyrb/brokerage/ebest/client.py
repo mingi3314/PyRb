@@ -1,37 +1,26 @@
-import abc
-from enum import StrEnum
 from typing import Any
 
 import requests
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from requests import Response
 
-
-class BrokerageAPIClient(abc.ABC):
-    @abc.abstractmethod
-    def send_request(self, method: str, path: str, **kwargs: Any) -> Response:
-        ...
+from pyrb.brokerage.base.client import BrokerageAPIClient, TradeMode
 
 
-class EbestConfig(BaseSettings):
+class EbestClientConfig(BaseSettings):
     # secret
     APP_KEY: str
     APP_SECRET: str
 
-    PAPER_APP_KEY: str
-    PAPER_APP_SECRET: str
+    PAPER_APP_KEY: str | None = None
+    PAPER_APP_SECRET: str | None = None
 
-    model_config = SettingsConfigDict(env_file=".env", env_prefix="EBEST_")
-
-
-class TradeMode(StrEnum):
-    REAL = "real"
-    PAPER = "paper"
+    model_config = SettingsConfigDict(env_prefix="EBEST_")
 
 
 class EbestAPIClient(BrokerageAPIClient):
     BASE_URL = "https://openapi.ebestsec.co.kr:8080"
-    config = EbestConfig()
+    config = EbestClientConfig()
 
     def __init__(self, trade_mode: TradeMode = TradeMode.PAPER) -> None:
         self._trade_mode = trade_mode
@@ -77,10 +66,3 @@ class EbestAPIClient(BrokerageAPIClient):
         response = requests.post(url, verify=False, headers=headers, params=params)
         response.raise_for_status()
         return response.json()["access_token"]
-
-
-def brokerage_api_client_factory(brokerage_name: str, trade_mode: TradeMode) -> BrokerageAPIClient:
-    if brokerage_name == "ebest":
-        return EbestAPIClient(trade_mode=trade_mode)
-    else:
-        raise NotImplementedError(f"Unsupported brokerage: {brokerage_name}")

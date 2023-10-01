@@ -1,12 +1,12 @@
 from typing import Literal, cast
 
-from pyrb.brokerage.context import RebalanceContext
-from pyrb.brokerage.fetcher import CurrentPrice
-from pyrb.brokerage.order_manager import (
+from pyrb.brokerage.base.fetcher import CurrentPrice
+from pyrb.brokerage.base.order_manager import (
     Order,
     OrderType,
 )
-from pyrb.brokerage.portfolio import Portfolio
+from pyrb.brokerage.base.portfolio import Portfolio
+from pyrb.brokerage.context import RebalanceContext
 from pyrb.exceptions import InsufficientFundsException
 
 
