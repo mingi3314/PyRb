@@ -1,10 +1,9 @@
 import pytest
 
-from pyrb.fetcher import CurrentPrice, PriceFetcher
-from pyrb.main import RebalanceContext
-from pyrb.order import Order
-from pyrb.order_manager import OrderManager
-from pyrb.portfolio import Portfolio, Position
+from pyrb.brokerage.base.fetcher import CurrentPrice, PriceFetcher
+from pyrb.brokerage.base.order_manager import Order, OrderManager
+from pyrb.brokerage.base.portfolio import Portfolio, Position
+from pyrb.brokerage.context import RebalanceContext
 
 
 class FakePortfolio(Portfolio):
@@ -12,7 +11,7 @@ class FakePortfolio(Portfolio):
         ...
 
     @property
-    def total_asset(self) -> float:
+    def total_value(self) -> float:
         return 100000
 
     @property

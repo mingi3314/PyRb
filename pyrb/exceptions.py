@@ -4,3 +4,11 @@ class PyRbException(Exception):
 
 class InsufficientFundsException(PyRbException):
     pass
+
+
+class PaperTradingSettingError(PyRbException):
+    pass
+
+
+class OrderPlacementError(PyRbException):
+    pass

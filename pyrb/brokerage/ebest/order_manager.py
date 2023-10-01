@@ -1,21 +1,8 @@
-import abc
+from requests import HTTPError
 
-from pyrb.client import BrokerageAPIClient, EbestAPIClient
-from pyrb.order import Order
-
-
-class OrderManager(abc.ABC):
-    def __init__(self) -> None:
-        ...
-
-    @abc.abstractmethod
-    def place_order(self, order: Order) -> None:
-        """주문을 제출합니다.
-
-        Args:
-            order: 주문 객체
-        """
-        ...
+from pyrb.brokerage.base.order_manager import Order, OrderManager
+from pyrb.brokerage.ebest.client import EbestAPIClient
+from pyrb.exceptions import OrderPlacementError
 
 
 class EbestOrderManager(OrderManager):
@@ -55,11 +42,7 @@ class EbestOrderManager(OrderManager):
             }
         }
 
-        self._api_client.send_request("POST", path, headers=headers, json=body)
-
-
-def order_manager_factory(brokerage_api_client: BrokerageAPIClient) -> OrderManager:
-    if isinstance(brokerage_api_client, EbestAPIClient):
-        return EbestOrderManager(brokerage_api_client)
-    else:
-        raise NotImplementedError(f"Unsupported BrokerageAPIClient: {brokerage_api_client}")
+        try:
+            self._api_client.send_request("POST", path, headers=headers, json=body)
+        except HTTPError as e:
+            raise OrderPlacementError(e)
