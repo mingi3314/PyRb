@@ -1,6 +1,6 @@
 import abc
 
-from pydantic import BaseModel, PositiveFloat, PositiveInt
+from pydantic import BaseModel, NonNegativeFloat, PositiveFloat, PositiveInt
 
 
 class Position(BaseModel):
@@ -17,12 +17,12 @@ class Portfolio(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def total_value(self) -> PositiveFloat:
+    def total_value(self) -> NonNegativeFloat:
         """Calculates the total value of the portfolio.
         total value = cash + sum of the market value of all positions
 
         Returns:
-            PositiveFloat: The total value of the portfolio.
+            NonNegativeFloat: The total value of the portfolio.
         """
         ...
 

@@ -1,4 +1,4 @@
-from pydantic import PositiveFloat
+from pydantic import NonNegativeFloat
 from requests import Response
 
 from pyrb.brokerage.base.portfolio import Portfolio, Position
@@ -10,7 +10,7 @@ class EbestPortfolio(Portfolio):
         self._api_client = api_client
 
     @property
-    def total_value(self) -> PositiveFloat:
+    def total_value(self) -> NonNegativeFloat:
         response = self._fetch_portfolio()
         res = response.json()
 
