@@ -2,7 +2,7 @@ import abc
 
 from pydantic import BaseModel
 
-from pyrb.client import BrokerageAPIClient, EbestAPIClient
+from pyrb.repositories.client import BrokerageAPIClient, EbestAPIClient
 
 
 class CurrentPrice(BaseModel):

@@ -3,7 +3,7 @@ import abc
 from pydantic import BaseModel, PositiveFloat, PositiveInt
 from requests import Response
 
-from pyrb.client import BrokerageAPIClient, EbestAPIClient
+from pyrb.repositories.client import BrokerageAPIClient, EbestAPIClient
 
 
 class Position(BaseModel):
