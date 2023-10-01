@@ -1,4 +1,3 @@
-import click
 import typer
 
 from pyrb.brokerage.base.client import TradeMode
@@ -30,7 +29,7 @@ def rebalance(
     if user_confirmation:
         rebalancer.place_orders(orders)
     else:
-        click.echo("No orders were placed")
+        typer.echo("No orders were placed")
 
     _report_orders(orders)
 
@@ -38,18 +37,18 @@ def rebalance(
 def _get_confirm_for_order_submit(context: RebalanceContext, orders: list[Order]) -> bool:
     """Confirm orders to the user and return the user's confirmation."""
     for order in orders:
-        click.echo(f"{order.symbol}: {order.side} {order.quantity} shares @ {order.price}")
+        typer.echo(f"{order.symbol}: {order.side} {order.quantity} shares @ {order.price}")
 
-    return click.confirm("Do you want to place these orders?")
+    return typer.confirm("Do you want to place these orders?")
 
 
 def _report_orders(orders: list[Order]) -> None:
     """Provides a summary of successful and failed orders."""
     for order in orders:
         if order.status == OrderStatus.PLACED:
-            click.echo(f"Successfully placed order: {order}")
+            typer.echo(f"Successfully placed order: {order}")
         elif order.status == OrderStatus.REJECTED:
-            click.echo(f"Failed to place order: {order}")
+            typer.echo(f"Failed to place order: {order}")
 
 
 if __name__ == "__main__":
