@@ -3,7 +3,7 @@ import typer
 from pyrb.brokerage.base.client import TradeMode
 from pyrb.brokerage.base.order_manager import Order, OrderStatus
 from pyrb.brokerage.context import RebalanceContext, create_rebalance_context
-from pyrb.service import Rebalancer
+from pyrb.service.rebalance import Rebalancer
 
 app = typer.Typer()
 
