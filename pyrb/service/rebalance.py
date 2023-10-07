@@ -8,7 +8,7 @@ from pyrb.brokerage.base.order_manager import (
 from pyrb.brokerage.base.portfolio import Portfolio
 from pyrb.brokerage.context import RebalanceContext
 from pyrb.exceptions import InsufficientFundsException, OrderPlacementError
-from pyrb.service.strategy import Strategy
+from pyrb.service.strategy.base import Strategy
 
 
 class Rebalancer:
