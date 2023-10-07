@@ -24,6 +24,7 @@ pre-commit = "^3.3.3"
 pytest = "^7.4.0"
 pytest-mock = "^3.11.1"
 types-requests = "^2.31.0.2"
+types-pyyaml = "^6.0.12.12"
 
 [build-system]
 requires = ["poetry-core"]
