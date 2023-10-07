@@ -7,8 +7,7 @@ from pyrb.brokerage.context import RebalanceContext
 
 
 class FakePortfolio(Portfolio):
-    def __init__(self) -> None:
-        ...
+    def __init__(self) -> None: ...
 
     @property
     def total_value(self) -> float:
@@ -42,22 +41,24 @@ class FakePortfolio(Portfolio):
 
 
 class FakePriceFetcher(PriceFetcher):
-    def __init__(self) -> None:
-        ...
+    def __init__(self) -> None: ...
 
     def get_current_price(self, symbol: str) -> CurrentPrice:
-        return CurrentPrice(symbol=symbol, price=100)
+        if symbol == "000660":
+            return CurrentPrice(symbol=symbol, price=100)
+        elif symbol == "005930":
+            return CurrentPrice(symbol=symbol, price=150)
+        else:
+            return CurrentPrice(symbol=symbol, price=100)
 
     def get_current_prices(self, symbols: list[str]) -> dict[str, CurrentPrice]:
-        return {symbol: CurrentPrice(symbol=symbol, price=100) for symbol in symbols}
+        return {symbol: self.get_current_price(symbol) for symbol in symbols}
 
 
 class FakeOrderManager(OrderManager):
-    def __init__(self) -> None:
-        ...
+    def __init__(self) -> None: ...
 
-    def place_order(self, order: Order) -> None:
-        ...
+    def place_order(self, order: Order) -> None: ...
 
 
 @pytest.fixture
