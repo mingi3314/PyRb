@@ -3,6 +3,7 @@ import typer
 from pyrb.brokerage.base.client import TradeMode
 from pyrb.brokerage.base.order_manager import Order, OrderStatus
 from pyrb.brokerage.context import RebalanceContext, create_rebalance_context
+from pyrb.brokerage.factory import BrokerageType
 from pyrb.service.rebalance import Rebalancer
 from pyrb.service.strategy.holding_portfolio import HoldingPortfolioRebalanceStrategy
 
@@ -17,22 +18,16 @@ def callback() -> None:
 
 @app.command()
 def holding_portfolio(
-    investment_amount: float = typer.Option(..., prompt="Enter the total investment amount"),
-    brokerage_name: str = typer.Option("ebest", "--brokerage", "-b"),
-    trade_mode: TradeMode = typer.Option(TradeMode.PAPER, "--trade-mode", "-t"),
+    investment_amount: float = typer.Option(..., help="The total investment amount"),
+    brokerage: BrokerageType = typer.Option(
+        BrokerageType.EBEST, help="The name of the brokerage to use"
+    ),
+    trade_mode: TradeMode = typer.Option(TradeMode.PAPER, help="The trade mode to use"),
 ) -> None:
     """
     Rebalances a holding portfolio with equal weights based on the specified options.
-
-    Args:
-        investment_amount (float): The total investment amount.
-        brokerage_name (str): The name of the brokerage to use (default: "ebest").
-        trade_mode (TradeMode): The trade mode to use (default: TradeMode.PAPER).
-
-    Returns:
-        None
     """
-    context = create_rebalance_context(brokerage_name, trade_mode)
+    context = create_rebalance_context(brokerage, trade_mode)
     strategy = HoldingPortfolioRebalanceStrategy(context)
     rebalancer = Rebalancer(context, strategy)
 
