@@ -20,11 +20,11 @@ class EbestClientConfig(BaseSettings):
 
 class EbestAPIClient(BrokerageAPIClient):
     BASE_URL = "https://openapi.ebestsec.co.kr:8080"
-    config = EbestClientConfig()
 
     def __init__(self, trade_mode: TradeMode = TradeMode.PAPER) -> None:
         self._trade_mode = trade_mode
         self._access_token = self._issue_access_token()
+        self._config = EbestClientConfig()
 
     def send_request(self, method: str, path: str, **kwargs: Any) -> Response:
         URL = f"{self.BASE_URL}/{path}"
@@ -49,11 +49,11 @@ class EbestAPIClient(BrokerageAPIClient):
 
         match self._trade_mode:
             case TradeMode.REAL:
-                app_key = self.config.APP_KEY
-                app_secret = self.config.APP_SECRET
+                app_key = self._config.APP_KEY
+                app_secret = self._config.APP_SECRET
             case TradeMode.PAPER:
-                app_key = self.config.PAPER_APP_KEY
-                app_secret = self.config.PAPER_APP_SECRET
+                app_key = self._config.PAPER_APP_KEY
+                app_secret = self._config.PAPER_APP_SECRET
 
         headers = {"content-type": "application/x-www-form-urlencoded"}
         params = {
