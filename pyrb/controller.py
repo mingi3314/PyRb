@@ -1,3 +1,5 @@
+from typing import Annotated
+
 import typer
 
 from pyrb.brokerage.base.client import TradeMode
@@ -18,11 +20,11 @@ def callback() -> None:
 
 @app.command()
 def holding_portfolio(
-    investment_amount: float = typer.Option(..., help="The total investment amount"),
-    brokerage: BrokerageType = typer.Option(
-        BrokerageType.EBEST, help="The name of the brokerage to use"
-    ),
-    trade_mode: TradeMode = typer.Option(TradeMode.PAPER, help="The trade mode to use"),
+    investment_amount: Annotated[float, typer.Option(..., help="The total investment amount")],
+    brokerage: Annotated[
+        BrokerageType, typer.Option(help="The name of the brokerage to use")
+    ] = BrokerageType.EBEST,
+    trade_mode: Annotated[TradeMode, typer.Option(help="The trade mode to use")] = TradeMode.PAPER,
 ) -> None:
     """
     Rebalances a holding portfolio with equal weights based on the specified options.
