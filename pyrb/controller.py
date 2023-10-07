@@ -4,6 +4,7 @@ from pyrb.brokerage.base.client import TradeMode
 from pyrb.brokerage.base.order_manager import Order, OrderStatus
 from pyrb.brokerage.context import RebalanceContext, create_rebalance_context
 from pyrb.service.rebalance import Rebalancer
+from pyrb.service.strategy import HoldingPortfolioRebalancingStrategy
 
 app = typer.Typer()
 
@@ -21,7 +22,8 @@ def rebalance(
     trade_mode: TradeMode = typer.Option(TradeMode.PAPER, "--trade-mode", "-t"),
 ) -> None:
     context = create_rebalance_context(brokerage_name, trade_mode)
-    rebalancer = Rebalancer(context)
+    strategy = HoldingPortfolioRebalancingStrategy(context.portfolio)
+    rebalancer = Rebalancer(context, strategy)
 
     orders = rebalancer.prepare_orders(investment_amount)
     user_confirmation = _get_confirm_for_order_submit(context, orders)

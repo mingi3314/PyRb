@@ -8,11 +8,13 @@ from pyrb.brokerage.base.order_manager import (
 from pyrb.brokerage.base.portfolio import Portfolio
 from pyrb.brokerage.context import RebalanceContext
 from pyrb.exceptions import InsufficientFundsException, OrderPlacementError
+from pyrb.service.strategy import Strategy
 
 
 class Rebalancer:
-    def __init__(self, context: RebalanceContext) -> None:
+    def __init__(self, context: RebalanceContext, strategy: Strategy) -> None:
         self._context = context
+        self._strategy = strategy
 
     def prepare_orders(self, investment_amount: float) -> list[Order]:
         """
