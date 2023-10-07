@@ -29,11 +29,6 @@ class Rebalancer:
             list[Order]: A list of orders to rebalance the portfolio.
         """
 
-        def _get_weight_by_stock(portfolio: Portfolio) -> dict[str, float]:
-            """return the target weight of each stock"""
-            stocks = portfolio.holding_symbols
-            return {stock: 1 / len(stocks) for stock in stocks}
-
         def _calculate_shares_to_trade(difference_in_amount: float, current_price: float) -> int:
             """Determine the number of shares to trade based on the difference in amount."""
             return int(difference_in_amount / current_price)
@@ -55,7 +50,7 @@ class Rebalancer:
 
         self._validate_investment_amount(investment_amount)
 
-        weight_by_stock = _get_weight_by_stock(self._context.portfolio)
+        weight_by_stock = self._strategy.create_target_weights()
 
         current_prices = _fetch_current_prices(self._context, weight_by_stock)
         orders: list[Order] = []
