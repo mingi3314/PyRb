@@ -1,3 +1,5 @@
+from math import floor
+
 from pyrb.brokerage.base.fetcher import CurrentPrice
 from pyrb.brokerage.base.order_manager import (
     Order,
@@ -31,7 +33,7 @@ class Rebalancer:
 
         def _calculate_shares_to_trade(difference_in_amount: float, current_price: float) -> int:
             """Determine the number of shares to trade based on the difference in amount."""
-            return int(difference_in_amount / current_price)
+            return floor(difference_in_amount / current_price)
 
         def _get_current_stock_amount(portfolio: Portfolio, stock: str) -> float:
             """Retrieve the current amount of a stock."""
