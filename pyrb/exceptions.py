@@ -12,3 +12,7 @@ class PaperTradingSettingError(PyRbException):
 
 class OrderPlacementError(PyRbException):
     pass
+
+
+class InvalidTargetError(PyRbException):
+    pass
