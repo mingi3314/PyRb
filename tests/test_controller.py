@@ -1,3 +1,4 @@
+import pytest
 from pytest_mock import MockerFixture
 from typer.testing import CliRunner
 
@@ -114,8 +115,16 @@ def test_sut_stops_rebalancing_with_insufficient_funds(
     assert result.exc_info[0] == InsufficientFundsException
 
 
+@pytest.mark.parametrize(
+    "targets_source",
+    [
+        "tests/resources/fake_targets.csv",
+        "tests/resources/fake_targets.json",
+        "tests/resources/fake_targets.yaml",
+    ],
+)
 def test_sut_rebalance_with_explicit_target_from_json_source(
-    fake_rebalance_context: RebalanceContext, mocker: MockerFixture
+    fake_rebalance_context: RebalanceContext, mocker: MockerFixture, targets_source: str
 ) -> None:
     """
     Check if rebalancing with explicit targets from a JSON source works as expected.
@@ -149,7 +158,7 @@ def test_sut_rebalance_with_explicit_target_from_json_source(
         [
             "explicit-target",
             "--targets-source",
-            "tests/resources/fake_targets.json",
+            targets_source,
             "--investment-amount",
             "10000",
         ],
