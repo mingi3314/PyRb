@@ -58,7 +58,7 @@ def explicit_target(
             help=(
                 "The source to read the target weights from. Supported file types: .csv, .json,"
                 " .yaml"
-            ),
+            ),  # TODO: add docstring for each file structure.
             exists=True,
             file_okay=True,
             dir_okay=False,
