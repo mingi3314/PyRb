@@ -22,9 +22,10 @@ class EbestAPIClient(BrokerageAPIClient):
     BASE_URL = "https://openapi.ebestsec.co.kr:8080"
 
     def __init__(self, trade_mode: TradeMode = TradeMode.PAPER) -> None:
-        self._trade_mode = trade_mode
-        self._access_token = self._issue_access_token()
         self._config = EbestClientConfig()
+        self._trade_mode = trade_mode
+
+        self._access_token = self._issue_access_token()
 
     def send_request(self, method: str, path: str, **kwargs: Any) -> Response:
         URL = f"{self.BASE_URL}/{path}"
