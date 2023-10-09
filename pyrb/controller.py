@@ -8,6 +8,10 @@ from pyrb.brokerage.base.order_manager import Order, OrderStatus
 from pyrb.brokerage.context import RebalanceContext, create_rebalance_context
 from pyrb.brokerage.factory import BrokerageType
 from pyrb.service.rebalance import Rebalancer
+from pyrb.service.strategy.asset_allocate import (
+    AssetAllocationStrategyEnum,
+    AssetAllocationStrtaegyFactory,
+)
 from pyrb.service.strategy.explicit_target import (
     ExplicitTargetRebalanceStrategy,
     read_targets_from_source,
@@ -81,6 +85,34 @@ def explicit_target(
     context = create_rebalance_context(brokerage, trade_mode)
     targets = read_targets_from_source(targets_source)
     strategy = ExplicitTargetRebalanceStrategy(targets)
+    rebalancer = Rebalancer(context, strategy)
+
+    orders = rebalancer.prepare_orders(investment_amount=investment_amount)
+    user_confirmation = _get_confirm_for_order_submit(context, orders)
+
+    if user_confirmation:
+        rebalancer.place_orders(orders)
+    else:
+        typer.echo("No orders were placed")
+
+    _report_orders(orders)
+
+
+@app.command()
+def asset_allocate(
+    strategy: Annotated[AssetAllocationStrategyEnum, typer.Option(..., help="The strategy to use")],
+    investment_amount: Annotated[float, typer.Option(..., help="The total investment amount")],
+    brokerage: Annotated[
+        BrokerageType, typer.Option(help="The name of the brokerage to use")
+    ] = BrokerageType.EBEST,
+    trade_mode: Annotated[TradeMode, typer.Option(help="The trade mode to use")] = TradeMode.PAPER,
+) -> None:
+    """
+    Rebalances a portfolio with the specified asset allocation strategy.
+
+    """
+    context = create_rebalance_context(brokerage, trade_mode)
+    strategy = AssetAllocationStrtaegyFactory().create(strategy)
     rebalancer = Rebalancer(context, strategy)
 
     orders = rebalancer.prepare_orders(investment_amount=investment_amount)
