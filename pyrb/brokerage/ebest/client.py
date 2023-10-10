@@ -42,14 +42,7 @@ class EbestAPIClient(BrokerageAPIClient):
             headers["authorization"] = f"Bearer {self._access_token}"
             response = requests.request(method, URL, **kwargs)
 
-        print(response.json())
-        try:
-            response.raise_for_status()
-        except requests.HTTPError:
-            error_code = response.json()["rsp_cd"]
-            error_msg = response.json()["rsp_msg"]
-            status_code = response.status_code
-            raise APIClientError(error_code, error_msg, status_code)
+        self._raise_for_status(response)
 
         return response
 
@@ -74,5 +67,16 @@ class EbestAPIClient(BrokerageAPIClient):
         }
 
         response = requests.post(url, verify=False, headers=headers, params=params)
-        response.raise_for_status()
+
+        self._raise_for_status(response)
+
         return response.json()["access_token"]
+
+    def _raise_for_status(self, response: Response) -> None:
+        try:
+            response.raise_for_status()
+        except requests.HTTPError:
+            error_code = response.json()["rsp_cd"]
+            error_msg = response.json()["rsp_msg"]
+            status_code = response.status_code
+            raise APIClientError(error_code, error_msg, status_code)
