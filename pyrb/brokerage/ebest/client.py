@@ -5,6 +5,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from requests import Response
 
 from pyrb.brokerage.base.client import BrokerageAPIClient, TradeMode
+from pyrb.exceptions import APIClientError
 
 
 class EbestClientConfig(BaseSettings):
@@ -41,7 +42,15 @@ class EbestAPIClient(BrokerageAPIClient):
             headers["authorization"] = f"Bearer {self._access_token}"
             response = requests.request(method, URL, **kwargs)
 
-        response.raise_for_status()
+        print(response.json())
+        try:
+            response.raise_for_status()
+        except requests.HTTPError:
+            error_code = response.json()["rsp_cd"]
+            error_msg = response.json()["rsp_msg"]
+            status_code = response.status_code
+            raise APIClientError(error_code, error_msg, status_code)
+
         return response
 
     def _issue_access_token(self) -> str:
