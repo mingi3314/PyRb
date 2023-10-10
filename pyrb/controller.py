@@ -2,9 +2,11 @@ from pathlib import Path
 from typing import Annotated
 
 import typer
+from rich.console import Console
+from rich.table import Table
 
 from pyrb.brokerage.base.client import TradeMode
-from pyrb.brokerage.base.order_manager import Order, OrderStatus
+from pyrb.brokerage.base.order_manager import Order, OrderSide, OrderStatus
 from pyrb.brokerage.context import RebalanceContext, create_rebalance_context
 from pyrb.brokerage.factory import BrokerageType
 from pyrb.service.rebalance import Rebalancer
@@ -19,6 +21,7 @@ from pyrb.service.strategy.explicit_target import (
 from pyrb.service.strategy.holding_portfolio import HoldingPortfolioRebalanceStrategy
 
 app = typer.Typer()
+console = Console()
 
 
 @app.callback()
@@ -128,8 +131,36 @@ def asset_allocate(
 
 def _get_confirm_for_order_submit(context: RebalanceContext, orders: list[Order]) -> bool:
     """Confirm orders to the user and return the user's confirmation."""
+    table = Table(
+        "Symbol",
+        "Side",
+        "Quantity",
+        "Price",
+        "Total Amount",
+        "Current position value",
+        "Expected position value",
+    )
+
     for order in orders:
-        typer.echo(f"{order.symbol}: {order.side} {order.quantity} shares @ {order.price}")
+        total_amount = order.quantity * order.price
+        current_position_value = context.portfolio.get_position_amount(order.symbol)
+        expected_position_value = (
+            current_position_value + total_amount
+            if order.side == OrderSide.BUY
+            else current_position_value - total_amount
+        )
+
+        table.add_row(
+            order.symbol,
+            order.side,
+            str(order.quantity),
+            str(order.price),
+            str(total_amount),
+            str(current_position_value),
+            str(expected_position_value),
+        )
+
+    console.print(table)
 
     return typer.confirm("Do you want to place these orders?")
 
