@@ -1,11 +1,22 @@
 from requests import HTTPError
 
-from pyrb.brokerage.base.order_manager import Order, OrderManager
+from pyrb.brokerage.base.order_manager import Order, OrderManager, OrderType
 from pyrb.brokerage.ebest.client import EbestAPIClient
 from pyrb.exceptions import OrderPlacementError
 
 
 class EbestOrderManager(OrderManager):
+    _order_type_mapping: dict[OrderType, str] = {
+        OrderType.LIMIT: "00",
+        OrderType.MARKET: "03",
+        OrderType.CONDITIONAL_LIMIT: "05",
+        OrderType.BEST_LIMIT: "06",
+        OrderType.IMMEDIATE_LIMIT: "07",
+        OrderType.PREOPENING_SESSION_LAST: "61",
+        OrderType.AFTER_HOURS_LAST: "81",
+        OrderType.AFTER_HOURS_SINGLE: "82",
+    }
+
     def __init__(self, api_client: EbestAPIClient) -> None:
         self._api_client = api_client
 
@@ -19,26 +30,11 @@ class EbestOrderManager(OrderManager):
                 "IsuNo": order.symbol,
                 "OrdQty": order.quantity,
                 "OrdPrc": order.price,
-                "BnsTpCode": "2",
-                "OrdprcPtnCode": "00",
-                "PrgmOrdprcPtnCode": "00",
-                "StslAbleYn": "0",
-                "StslOrdprcTpCode": "0",
-                "CommdaCode": "41",
+                "BnsTpCode": "2" if order.side == "BUY" else "1",
+                "OrdprcPtnCode": self._order_type_mapping[order.order_type],
                 "MgntrnCode": "000",
                 "LoanDt": "",
-                "MbrNo": "000",
                 "OrdCndiTpCode": "0",
-                "StrtgCode": " ",
-                "GrpId": " ",
-                "OrdSeqNo": 0,
-                "PtflNo": 0,
-                "BskNo": 0,
-                "TrchNo": 0,
-                "ItemNo": 0,
-                "OpDrtnNo": "0",
-                "LpYn": "0",
-                "CvrgTpCode": "0",
             }
         }
 
