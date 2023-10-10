@@ -12,8 +12,7 @@ class Position(BaseModel):
 
 
 class Portfolio(abc.ABC):
-    def __init__(self) -> None:
-        ...
+    def __init__(self) -> None: ...
 
     @property
     @abc.abstractmethod
@@ -57,4 +56,9 @@ class Portfolio(abc.ABC):
             Position | None: The position object for the given symbol,
                              if the symbol is not found, None will be returned.
         """
+        ...
+
+    @abc.abstractmethod
+    def refresh(self) -> None:
+        """Refreshes the portfolio object."""
         ...
