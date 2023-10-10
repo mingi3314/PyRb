@@ -37,6 +37,10 @@ class EbestPortfolio(Portfolio):
     def get_position(self, symbol: str) -> Position | None:
         return next((position for position in self.positions if position.symbol == symbol), None)
 
+    def get_position_amount(self, symbol: str) -> NonNegativeFloat:
+        position = self.get_position(symbol)
+        return position.total_amount if position else 0
+
     def refresh(self) -> None:
         self._serialized_portfolio = self._fetch_portfolio()
 

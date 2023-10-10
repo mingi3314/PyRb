@@ -59,6 +59,19 @@ class Portfolio(abc.ABC):
         ...
 
     @abc.abstractmethod
+    def get_position_amount(self, symbol: str) -> NonNegativeFloat:
+        """Returns the total amount of the position for the given symbol.
+        If the symbol is not found, 0 will be returned.
+
+        Args:
+            symbol : The symbol of the position to retrieve.
+
+        Returns:
+            NonNegativeFloat: The total amount of the position for the given symbol.
+        """
+        ...
+
+    @abc.abstractmethod
     def refresh(self) -> None:
         """Refreshes the portfolio object."""
         ...
