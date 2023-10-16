@@ -66,7 +66,7 @@ class EbestAPIClient(BrokerageAPIClient):
             "scope": "oob",
         }
 
-        response = requests.post(url, verify=False, headers=headers, params=params)
+        response = requests.post(url, headers=headers, params=params)
 
         self._raise_for_status(response)
 
