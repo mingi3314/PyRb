@@ -12,7 +12,7 @@ from pyrb.brokerage.factory import BrokerageType
 from pyrb.service.rebalance import Rebalancer
 from pyrb.service.strategy.asset_allocate import (
     AssetAllocationStrategyEnum,
-    AssetAllocationStrtaegyFactory,
+    AssetAllocationStrtegyFactory,
 )
 from pyrb.service.strategy.explicit_target import (
     ExplicitTargetRebalanceStrategy,
@@ -115,7 +115,7 @@ def asset_allocate(
 
     """
     context = create_rebalance_context(brokerage, trade_mode)
-    strategy = AssetAllocationStrtaegyFactory().create(strategy)
+    strategy = AssetAllocationStrtegyFactory().create(strategy)
     rebalancer = Rebalancer(context, strategy)
 
     orders = rebalancer.prepare_orders(investment_amount=investment_amount)

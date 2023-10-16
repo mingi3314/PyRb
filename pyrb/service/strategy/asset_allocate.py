@@ -27,7 +27,7 @@ class AssetAllocationStrategyEnum(StrEnum):
     ALL_WEATHER_KR = "all-weather-kr"
 
 
-class AssetAllocationStrtaegyFactory:
+class AssetAllocationStrtegyFactory:
     def create(self, strategy_type: AssetAllocationStrategyEnum) -> AssetAllocationStrategy:
         if strategy_type == AssetAllocationStrategyEnum.ALL_WEATHER_KR:
             return AllWeatherKRStrategy()
