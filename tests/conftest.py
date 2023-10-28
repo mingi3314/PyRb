@@ -39,6 +39,12 @@ class FakePortfolio(Portfolio):
     def get_position(self, symbol: str) -> Position | None:
         return next((position for position in self.positions if position.symbol == symbol), None)
 
+    def get_position_amount(self, symbol: str) -> float:
+        position = self.get_position(symbol)
+        return position.total_amount if position else 0
+
+    def refresh(self) -> None: ...
+
 
 class FakePriceFetcher(PriceFetcher):
     def __init__(self) -> None: ...
