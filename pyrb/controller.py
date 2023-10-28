@@ -129,6 +129,30 @@ def asset_allocate(
     _report_orders(orders)
 
 
+@app.command()
+def portfolio(
+    brokerage: Annotated[
+        BrokerageType, typer.Option(help="The name of the brokerage to use")
+    ] = BrokerageType.EBEST,
+    trade_mode: Annotated[TradeMode, typer.Option(help="The trade mode to use")] = TradeMode.PAPER,
+) -> None:
+    context = create_rebalance_context(brokerage, trade_mode)
+    context.portfolio.refresh()
+
+    table = Table("Symbol", "Quantity", "Sellable Quantity", "Average Buy Price", "Total Amount")
+
+    for position in context.portfolio.positions:
+        table.add_row(
+            position.symbol,
+            str(position.quantity),
+            str(position.sellable_quantity),
+            str(position.average_buy_price),
+            str(position.total_amount),
+        )
+
+    console.print(table)
+
+
 def _get_confirm_for_order_submit(context: RebalanceContext, orders: list[Order]) -> bool:
     """Confirm orders to the user and return the user's confirmation."""
     table = Table(
