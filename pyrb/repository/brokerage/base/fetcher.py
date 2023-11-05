@@ -10,8 +10,7 @@ class CurrentPrice(BaseModel):
 
 
 class PriceFetcher(abc.ABC):
-    def __init__(self) -> None:
-        ...
+    def __init__(self) -> None: ...
 
     @abc.abstractmethod
     def get_current_price(self, symbol: str) -> CurrentPrice:

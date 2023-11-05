@@ -1,8 +1,8 @@
 from requests import HTTPError
 
-from pyrb.brokerage.base.order_manager import Order, OrderManager, OrderType
-from pyrb.brokerage.ebest.client import EbestAPIClient
 from pyrb.exceptions import OrderPlacementError
+from pyrb.repository.brokerage.base.order_manager import Order, OrderManager, OrderType
+from pyrb.repository.brokerage.ebest.client import EbestAPIClient
 
 
 class EbestOrderManager(OrderManager):

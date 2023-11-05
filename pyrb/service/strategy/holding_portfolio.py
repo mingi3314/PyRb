@@ -1,4 +1,4 @@
-from pyrb.brokerage.context import RebalanceContext
+from pyrb.repository.brokerage.context import RebalanceContext
 from pyrb.service.strategy.base import Strategy
 
 
