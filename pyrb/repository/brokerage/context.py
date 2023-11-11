@@ -1,10 +1,9 @@
-from pyrb.repository.brokerage.base.client import TradeMode
+from pyrb.model.account import Account
 from pyrb.repository.brokerage.base.fetcher import PriceFetcher
 from pyrb.repository.brokerage.base.order_manager import OrderManager
 from pyrb.repository.brokerage.base.portfolio import Portfolio
 from pyrb.repository.brokerage.factory import (
     BrokerageAPIClientFactory,
-    BrokerageType,
     OrderManagerFactory,
     PortfolioFactory,
     PriceFetcherFactory,
@@ -32,8 +31,8 @@ class RebalanceContext:
         return self._order_manager
 
 
-def create_rebalance_context(brokerage: BrokerageType, trade_mode: TradeMode) -> RebalanceContext:
-    brokerage_api_client = BrokerageAPIClientFactory().create(brokerage, trade_mode)
+def create_rebalance_context(account: Account) -> RebalanceContext:
+    brokerage_api_client = BrokerageAPIClientFactory().create(account)
 
     portfolio = PortfolioFactory().create(brokerage_api_client)
     price_fetcher = PriceFetcherFactory().create(brokerage_api_client)

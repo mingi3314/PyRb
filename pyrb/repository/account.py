@@ -1,12 +1,17 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-from pyrb.model.account import Account
+import toml
+
+from pyrb.model.account import Account, EbestAccount
 
 
 class AccountRepository(ABC):
     @abstractmethod
     def set(self, account: Account) -> None: ...
+
+    @abstractmethod
+    def get(self) -> Account: ...
 
 
 class LocalConfigAccountRepository(AccountRepository):
@@ -18,3 +23,7 @@ class LocalConfigAccountRepository(AccountRepository):
     def set(self, account: Account) -> None:
         with open(self._config_path, "w") as f:
             f.write(account.to_toml())
+
+    def get(self) -> Account:
+        with open(self._config_path) as f:
+            return EbestAccount(**toml.loads(f.read()))

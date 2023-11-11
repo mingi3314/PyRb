@@ -1,30 +1,18 @@
 from typing import Any
 
 import requests
-from pydantic_settings import BaseSettings, SettingsConfigDict
 from requests import Response
 
 from pyrb.exceptions import APIClientError
-from pyrb.repository.brokerage.base.client import BrokerageAPIClient, TradeMode
-
-
-class EbestClientConfig(BaseSettings):
-    # secret
-    APP_KEY: str
-    APP_SECRET: str
-
-    PAPER_APP_KEY: str | None = None
-    PAPER_APP_SECRET: str | None = None
-
-    model_config = SettingsConfigDict(env_prefix="EBEST_")
+from pyrb.model.account import EbestAccount
+from pyrb.repository.brokerage.base.client import BrokerageAPIClient
 
 
 class EbestAPIClient(BrokerageAPIClient):
     BASE_URL = "https://openapi.ebestsec.co.kr:8080"
 
-    def __init__(self, trade_mode: TradeMode = TradeMode.PAPER) -> None:
-        self._config = EbestClientConfig()
-        self._trade_mode = trade_mode
+    def __init__(self, account: EbestAccount) -> None:
+        self._account = account
 
         self._access_token = self._issue_access_token()
 
@@ -50,13 +38,8 @@ class EbestAPIClient(BrokerageAPIClient):
         path = "oauth2/token"
         url = f"{self.BASE_URL}/{path}"
 
-        match self._trade_mode:
-            case TradeMode.REAL:
-                app_key = self._config.APP_KEY
-                app_secret = self._config.APP_SECRET
-            case TradeMode.PAPER:
-                app_key = self._config.PAPER_APP_KEY
-                app_secret = self._config.PAPER_APP_SECRET
+        app_key = self._account.app_key
+        app_secret = self._account.app_secret
 
         headers = {"content-type": "application/x-www-form-urlencoded"}
         params = {

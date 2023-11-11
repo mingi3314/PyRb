@@ -5,11 +5,12 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
+from pyrb.controller.cli.account import APP_NAME
 from pyrb.controller.cli.account import app as account_app
-from pyrb.repository.brokerage.base.client import TradeMode
+from pyrb.repository.account import LocalConfigAccountRepository
 from pyrb.repository.brokerage.base.order_manager import Order, OrderSide, OrderStatus
 from pyrb.repository.brokerage.context import RebalanceContext, create_rebalance_context
-from pyrb.repository.brokerage.factory import BrokerageType
+from pyrb.service.account import AccountService
 from pyrb.service.rebalance import Rebalancer
 from pyrb.service.strategy.asset_allocate import (
     AssetAllocationStrategyEnum,
@@ -35,15 +36,19 @@ def callback() -> None:
 @app.command()
 def holding_portfolio(
     investment_amount: Annotated[float, typer.Option(..., help="The total investment amount")],
-    brokerage: Annotated[
-        BrokerageType, typer.Option(help="The name of the brokerage to use")
-    ] = BrokerageType.EBEST,
-    trade_mode: Annotated[TradeMode, typer.Option(help="The trade mode to use")] = TradeMode.PAPER,
 ) -> None:
     """
     Rebalances a holding portfolio with equal weights based on the specified options.
     """
-    context = create_rebalance_context(brokerage, trade_mode)
+    app_config_dir = Path(typer.get_app_dir(APP_NAME))
+    accounts_config_path = app_config_dir / "accounts"
+
+    account_service = AccountService(
+        account_repo=LocalConfigAccountRepository(accounts_config_path)
+    )
+
+    account = account_service.get()
+    context = create_rebalance_context(account)
     strategy = HoldingPortfolioRebalanceStrategy(context)
     rebalancer = Rebalancer(context, strategy)
 
@@ -77,17 +82,21 @@ def explicit_target(
         ),
     ],
     investment_amount: Annotated[float, typer.Option(..., help="The total investment amount")],
-    brokerage: Annotated[
-        BrokerageType, typer.Option(help="The name of the brokerage to use")
-    ] = BrokerageType.EBEST,
-    trade_mode: Annotated[TradeMode, typer.Option(help="The trade mode to use")] = TradeMode.PAPER,
 ) -> None:
     """
     Rebalances a portfolio with explicit target weights from the specified source.
     Sum of target weights must be 1.0. If not, the weights will be normalized.
 
     """
-    context = create_rebalance_context(brokerage, trade_mode)
+    app_config_dir = Path(typer.get_app_dir(APP_NAME))
+    accounts_config_path = app_config_dir / "accounts"
+
+    account_service = AccountService(
+        account_repo=LocalConfigAccountRepository(accounts_config_path)
+    )
+
+    account = account_service.get()
+    context = create_rebalance_context(account)
     targets = read_targets_from_source(targets_source)
     strategy = ExplicitTargetRebalanceStrategy(targets)
     rebalancer = Rebalancer(context, strategy)
@@ -107,16 +116,21 @@ def explicit_target(
 def asset_allocate(
     strategy: Annotated[AssetAllocationStrategyEnum, typer.Option(..., help="The strategy to use")],
     investment_amount: Annotated[float, typer.Option(..., help="The total investment amount")],
-    brokerage: Annotated[
-        BrokerageType, typer.Option(help="The name of the brokerage to use")
-    ] = BrokerageType.EBEST,
-    trade_mode: Annotated[TradeMode, typer.Option(help="The trade mode to use")] = TradeMode.PAPER,
 ) -> None:
     """
     Rebalances a portfolio with the specified asset allocation strategy.
 
     """
-    context = create_rebalance_context(brokerage, trade_mode)
+    app_config_dir = Path(typer.get_app_dir(APP_NAME))
+    accounts_config_path = app_config_dir / "accounts"
+
+    account_service = AccountService(
+        account_repo=LocalConfigAccountRepository(accounts_config_path)
+    )
+
+    account = account_service.get()
+    context = create_rebalance_context(account)
+
     strategy = AssetAllocationStrtegyFactory().create(strategy)
     rebalancer = Rebalancer(context, strategy)
 
@@ -132,13 +146,16 @@ def asset_allocate(
 
 
 @app.command()
-def portfolio(
-    brokerage: Annotated[
-        BrokerageType, typer.Option(help="The name of the brokerage to use")
-    ] = BrokerageType.EBEST,
-    trade_mode: Annotated[TradeMode, typer.Option(help="The trade mode to use")] = TradeMode.PAPER,
-) -> None:
-    context = create_rebalance_context(brokerage, trade_mode)
+def portfolio() -> None:
+    app_config_dir = Path(typer.get_app_dir(APP_NAME))
+    accounts_config_path = app_config_dir / "accounts"
+
+    account_service = AccountService(
+        account_repo=LocalConfigAccountRepository(accounts_config_path)
+    )
+
+    account = account_service.get()
+    context = create_rebalance_context(account)
     context.portfolio.refresh()
 
     table = Table("Symbol", "Quantity", "Sellable Quantity", "Average Buy Price", "Total Amount")

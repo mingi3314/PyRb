@@ -1,6 +1,5 @@
-from enum import StrEnum
-
-from pyrb.repository.brokerage.base.client import BrokerageAPIClient, TradeMode
+from pyrb.model.account import Account, EbestAccount
+from pyrb.repository.brokerage.base.client import BrokerageAPIClient
 from pyrb.repository.brokerage.base.fetcher import PriceFetcher
 from pyrb.repository.brokerage.base.order_manager import OrderManager
 from pyrb.repository.brokerage.base.portfolio import Portfolio
@@ -10,19 +9,15 @@ from pyrb.repository.brokerage.ebest.order_manager import EbestOrderManager
 from pyrb.repository.brokerage.ebest.portfolio import EbestPortfolio
 
 
-class BrokerageType(StrEnum):
-    EBEST = "ebest"
-
-
 class BrokerageAPIClientFactory:
     def __init__(self) -> None: ...
 
-    def create(self, brokerage: BrokerageType, trade_mode: TradeMode) -> BrokerageAPIClient:
-        match brokerage:
-            case BrokerageType.EBEST:
-                return EbestAPIClient(trade_mode=trade_mode)
+    def create(self, account: Account) -> BrokerageAPIClient:
+        match account:
+            case EbestAccount():
+                return EbestAPIClient(account)
             case _:
-                raise NotImplementedError(f"Unsupported brokerage: {brokerage}")
+                raise NotImplementedError(f"Unsupported account: {account}")
 
 
 class PortfolioFactory:

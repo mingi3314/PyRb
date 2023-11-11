@@ -1,6 +1,7 @@
 import tempfile
 from pathlib import Path
 
+from pyrb.enums import BrokerageType
 from pyrb.model.account import Account
 from pyrb.repository.account import LocalConfigAccountRepository
 from pyrb.service.account import AccountService
@@ -16,8 +17,14 @@ def test_sut_set_account_with_local_config_account_repository() -> None:
         class FakeAccount(Account):
             foo: str
 
+            @property
+            def brokerage(self) -> BrokerageType:
+                return BrokerageType.EBEST
+
         # when
-        account = FakeAccount(foo="bar")
+        account = FakeAccount(
+            foo="bar",
+        )
         account_service.set(account)
 
         # then
