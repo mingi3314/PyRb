@@ -5,6 +5,7 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
+from pyrb.controller.cli.account import app as account_app
 from pyrb.repository.brokerage.base.client import TradeMode
 from pyrb.repository.brokerage.base.order_manager import Order, OrderSide, OrderStatus
 from pyrb.repository.brokerage.context import RebalanceContext, create_rebalance_context
@@ -21,6 +22,7 @@ from pyrb.service.strategy.explicit_target import (
 from pyrb.service.strategy.holding_portfolio import HoldingPortfolioRebalanceStrategy
 
 app = typer.Typer()
+app.add_typer(account_app, name="account")
 console = Console()
 
 
