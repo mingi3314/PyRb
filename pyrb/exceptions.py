@@ -1,21 +1,19 @@
-class PyRbException(Exception):
-    pass
+class PyRbException(Exception): ...
 
 
-class InsufficientFundsException(PyRbException):
-    pass
+class InsufficientFundsException(PyRbException): ...
 
 
-class PaperTradingSettingError(PyRbException):
-    pass
+class PaperTradingSettingError(PyRbException): ...
 
 
-class OrderPlacementError(PyRbException):
-    pass
+class OrderPlacementError(PyRbException): ...
 
 
-class InvalidTargetError(PyRbException):
-    pass
+class InvalidTargetError(PyRbException): ...
+
+
+class InitializationError(PyRbException): ...
 
 
 class APIClientError(PyRbException):

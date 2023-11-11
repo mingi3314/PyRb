@@ -3,7 +3,8 @@ from pathlib import Path
 
 import toml
 
-from pyrb.model.account import Account, EbestAccount
+from pyrb.exceptions import InitializationError
+from pyrb.model.account import Account, AccountFactory
 
 
 class AccountRepository(ABC):
@@ -17,8 +18,9 @@ class AccountRepository(ABC):
 class LocalConfigAccountRepository(AccountRepository):
     def __init__(self, config_path: Path) -> None:
         self._config_path = config_path
-        # create directory if not exists
+        # create config file within a directory if not exists
         self._config_path.parent.mkdir(parents=True, exist_ok=True)
+        self._config_path.touch(exist_ok=True)
 
     def set(self, account: Account) -> None:
         with open(self._config_path, "w") as f:
@@ -26,4 +28,11 @@ class LocalConfigAccountRepository(AccountRepository):
 
     def get(self) -> Account:
         with open(self._config_path) as f:
-            return EbestAccount(**toml.loads(f.read()))
+            account_config = toml.loads(f.read())
+            if not account_config:
+                raise InitializationError("account is not set. Please set account first")
+
+            brokerage = account_config.pop("brokerage")
+            account = AccountFactory.create(brokerage=brokerage, **account_config)
+
+            return account
