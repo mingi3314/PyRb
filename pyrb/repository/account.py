@@ -17,4 +17,4 @@ class LocalConfigAccountRepository(AccountRepository):
 
     def set_account(self, account: Account) -> None:
         with open(self._config_path, "w") as f:
-            f.write(account.model_dump_json())
+            f.write(account.to_toml())

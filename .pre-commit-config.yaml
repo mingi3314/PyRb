@@ -20,4 +20,4 @@ repos:
     hooks:
       - id: "mypy"
         additional_dependencies:
-          [click, pytest, pydantic, types-requests, typer, types-PyYAML]
+          [click, pytest, pydantic, types-requests, typer, types-PyYAML, types-toml]
