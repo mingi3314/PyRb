@@ -6,7 +6,7 @@ from pyrb.model.account import Account
 
 class AccountRepository(ABC):
     @abstractmethod
-    def set_account(self, account: Account) -> None: ...
+    def set(self, account: Account) -> None: ...
 
 
 class LocalConfigAccountRepository(AccountRepository):
@@ -15,6 +15,6 @@ class LocalConfigAccountRepository(AccountRepository):
         # create directory if not exists
         self._config_path.parent.mkdir(parents=True, exist_ok=True)
 
-    def set_account(self, account: Account) -> None:
+    def set(self, account: Account) -> None:
         with open(self._config_path, "w") as f:
             f.write(account.to_toml())

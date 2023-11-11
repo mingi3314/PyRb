@@ -7,4 +7,4 @@ class AccountService:
         self._account_repo = account_repo
 
     def set(self, account: Account) -> None:
-        self._account_repo.set_account(account)
+        self._account_repo.set(account)
