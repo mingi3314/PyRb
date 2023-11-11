@@ -2,10 +2,10 @@ import pytest
 from pytest_mock import MockerFixture
 from typer.testing import CliRunner
 
-from pyrb.brokerage.base.order_manager import Order, OrderSide, OrderStatus, OrderType
-from pyrb.brokerage.context import RebalanceContext
 from pyrb.controller.cli.main import app
 from pyrb.exceptions import InsufficientFundsException
+from pyrb.repository.brokerage.base.order_manager import Order, OrderSide, OrderStatus, OrderType
+from pyrb.repository.brokerage.context import RebalanceContext
 from pyrb.service.rebalance import Rebalancer
 
 

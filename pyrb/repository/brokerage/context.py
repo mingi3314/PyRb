@@ -1,8 +1,8 @@
-from pyrb.brokerage.base.client import TradeMode
-from pyrb.brokerage.base.fetcher import PriceFetcher
-from pyrb.brokerage.base.order_manager import OrderManager
-from pyrb.brokerage.base.portfolio import Portfolio
-from pyrb.brokerage.factory import (
+from pyrb.repository.brokerage.base.client import TradeMode
+from pyrb.repository.brokerage.base.fetcher import PriceFetcher
+from pyrb.repository.brokerage.base.order_manager import OrderManager
+from pyrb.repository.brokerage.base.portfolio import Portfolio
+from pyrb.repository.brokerage.factory import (
     BrokerageAPIClientFactory,
     BrokerageType,
     OrderManagerFactory,

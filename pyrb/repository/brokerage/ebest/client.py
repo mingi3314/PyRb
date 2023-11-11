@@ -4,8 +4,8 @@ import requests
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from requests import Response
 
-from pyrb.brokerage.base.client import BrokerageAPIClient, TradeMode
 from pyrb.exceptions import APIClientError
+from pyrb.repository.brokerage.base.client import BrokerageAPIClient, TradeMode
 
 
 class EbestClientConfig(BaseSettings):

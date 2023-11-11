@@ -7,8 +7,7 @@ from requests import Response
 
 class BrokerageAPIClient(abc.ABC):
     @abc.abstractmethod
-    def send_request(self, method: str, path: str, **kwargs: Any) -> Response:
-        ...
+    def send_request(self, method: str, path: str, **kwargs: Any) -> Response: ...
 
 
 class TradeMode(StrEnum):

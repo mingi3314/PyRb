@@ -1,13 +1,13 @@
 from enum import StrEnum
 
-from pyrb.brokerage.base.client import BrokerageAPIClient, TradeMode
-from pyrb.brokerage.base.fetcher import PriceFetcher
-from pyrb.brokerage.base.order_manager import OrderManager
-from pyrb.brokerage.base.portfolio import Portfolio
-from pyrb.brokerage.ebest.client import EbestAPIClient
-from pyrb.brokerage.ebest.fetcher import EbestPriceFetcher
-from pyrb.brokerage.ebest.order_manager import EbestOrderManager
-from pyrb.brokerage.ebest.portfolio import EbestPortfolio
+from pyrb.repository.brokerage.base.client import BrokerageAPIClient, TradeMode
+from pyrb.repository.brokerage.base.fetcher import PriceFetcher
+from pyrb.repository.brokerage.base.order_manager import OrderManager
+from pyrb.repository.brokerage.base.portfolio import Portfolio
+from pyrb.repository.brokerage.ebest.client import EbestAPIClient
+from pyrb.repository.brokerage.ebest.fetcher import EbestPriceFetcher
+from pyrb.repository.brokerage.ebest.order_manager import EbestOrderManager
+from pyrb.repository.brokerage.ebest.portfolio import EbestPortfolio
 
 
 class BrokerageType(StrEnum):
