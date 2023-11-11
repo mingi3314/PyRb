@@ -4,7 +4,7 @@ from typer.testing import CliRunner
 
 from pyrb.brokerage.base.order_manager import Order, OrderSide, OrderStatus, OrderType
 from pyrb.brokerage.context import RebalanceContext
-from pyrb.controller import app
+from pyrb.controller.cli.main import app
 from pyrb.exceptions import InsufficientFundsException
 from pyrb.service.rebalance import Rebalancer
 
@@ -15,7 +15,9 @@ def test_sut_rebalances(fake_rebalance_context: RebalanceContext, mocker: Mocker
     # given
     runner = CliRunner()
 
-    mocker.patch("pyrb.controller.create_rebalance_context", return_value=fake_rebalance_context)
+    mocker.patch(
+        "pyrb.controller.cli.main.create_rebalance_context", return_value=fake_rebalance_context
+    )
 
     spy = mocker.spy(fake_rebalance_context.order_manager, "place_order")
 
@@ -55,7 +57,9 @@ def test_sut_rebalances_with_only_buy_orders(
     # given
     runner = CliRunner()
 
-    mocker.patch("pyrb.controller.create_rebalance_context", return_value=fake_rebalance_context)
+    mocker.patch(
+        "pyrb.controller.cli.main.create_rebalance_context", return_value=fake_rebalance_context
+    )
 
     # when
     result = runner.invoke(app, ["holding-portfolio", "--investment-amount", "20000"])
@@ -71,7 +75,9 @@ def test_sut_rebalances_with_only_sell_order(
     # given
     runner = CliRunner()
 
-    mocker.patch("pyrb.controller.create_rebalance_context", return_value=fake_rebalance_context)
+    mocker.patch(
+        "pyrb.controller.cli.main.create_rebalance_context", return_value=fake_rebalance_context
+    )
 
     # when
     result = runner.invoke(app, ["holding-portfolio", "--investment-amount", "1000"])
@@ -87,7 +93,9 @@ def test_sut_stops_rebalancing_with_disallowance_from_user(
     # given
     runner = CliRunner()
 
-    mocker.patch("pyrb.controller.create_rebalance_context", return_value=fake_rebalance_context)
+    mocker.patch(
+        "pyrb.controller.cli.main.create_rebalance_context", return_value=fake_rebalance_context
+    )
 
     # when
     result = runner.invoke(app, ["holding-portfolio", "--investment-amount", "1000"], input="n\n")
@@ -103,7 +111,9 @@ def test_sut_stops_rebalancing_with_insufficient_funds(
     # given
     runner = CliRunner()
 
-    mocker.patch("pyrb.controller.create_rebalance_context", return_value=fake_rebalance_context)
+    mocker.patch(
+        "pyrb.controller.cli.main.create_rebalance_context", return_value=fake_rebalance_context
+    )
 
     # when
     result = runner.invoke(
@@ -148,7 +158,9 @@ def test_sut_rebalance_with_explicit_target_from_json_source(
     # given
     runner = CliRunner()
 
-    mocker.patch("pyrb.controller.create_rebalance_context", return_value=fake_rebalance_context)
+    mocker.patch(
+        "pyrb.controller.cli.main.create_rebalance_context", return_value=fake_rebalance_context
+    )
 
     spy = mocker.spy(Rebalancer, "place_orders")
 

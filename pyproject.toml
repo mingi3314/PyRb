@@ -6,7 +6,7 @@ authors = ["Minki Kim <mingi3314@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.scripts]
-pyrb = "pyrb.controller:app"
+pyrb = "pyrb.controller.cli.main:app"
 
 [tool.poetry.dependencies]
 python = "^3.11"
