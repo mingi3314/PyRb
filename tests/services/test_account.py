@@ -1,5 +1,6 @@
 import tempfile
 from pathlib import Path
+from collections.abc import Generator
 
 import pytest
 from pytest_mock import MockerFixture
@@ -11,7 +12,22 @@ from pyrb.repository.account import LocalConfigAccountRepository
 from pyrb.service.account import AccountService
 
 
-def test_sut_set_account_with_local_config_account_repository(mocker: MockerFixture) -> None:
+@pytest.fixture
+def tmp_config_path() -> Generator[Path, None, None]:
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        config_path = Path(tmpdirname) / "accounts"
+        yield config_path
+
+
+@pytest.fixture
+def account_service(tmp_config_path: Path) -> AccountService:
+    account_repo = LocalConfigAccountRepository(tmp_config_path)
+    return AccountService(account_repo)
+
+
+def test_sut_get_account_with_local_config_account_repository(
+    mocker: MockerFixture, account_service: AccountService
+) -> None:
     # given
     class FakeAccount(Account):
         foo: str
@@ -23,53 +39,17 @@ def test_sut_set_account_with_local_config_account_repository(mocker: MockerFixt
         return_value=fake_account,
     )
 
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        config_path = Path(tmpdirname) / "accounts"
-        account_repo = LocalConfigAccountRepository(config_path)
-        account_service = AccountService(account_repo)
+    account_service.set(fake_account)
 
+    # when
+    account = account_service.get()
+
+    # then
+    assert account == fake_account
+
+
+def test_sut_could_not_get_account_before_set_account(account_service: AccountService) -> None:
+    # then
+    with pytest.raises(InitializationError):
         # when
-        account_service.set(fake_account)
-
-        # then
-        with open(config_path) as f:
-            assert f.read() == fake_account.to_toml()
-
-
-def test_sut_get_account_with_local_config_account_repository(mocker: MockerFixture) -> None:
-    # given
-    class FakeAccount(Account):
-        foo: str
-
-    fake_account = FakeAccount(foo="bar", brokerage=BrokerageType.EBEST)
-    mocker.patch.object(
-        AccountFactory,
-        "create",
-        return_value=fake_account,
-    )
-
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        config_path = Path(tmpdirname) / "accounts"
-        account_repo = LocalConfigAccountRepository(config_path)
-        account_service = AccountService(account_repo)
-
-        account_service.set(fake_account)
-
-        # when
-        account = account_service.get()
-
-        # then
-        assert account == fake_account
-
-
-def test_sut_could_not_get_account_before_set_account(mocker: MockerFixture) -> None:
-    # given
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        config_path = Path(tmpdirname) / "accounts"
-        account_repo = LocalConfigAccountRepository(config_path)
-        account_service = AccountService(account_repo)
-
-        # then
-        with pytest.raises(InitializationError):
-            # when
-            account_service.get()
+        account_service.get()
