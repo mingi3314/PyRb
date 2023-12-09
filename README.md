@@ -17,14 +17,22 @@
 
 You can install `pyrb` directly from GitHub:
 
-```bash
-pip install git+https://github.com/yourusername/pyrb.git
-```
+- Pip
+
+  ```bash
+  pip install git+https://github.com/mingi3314/pyrb.git
+  ```
+
+- Poetry
+
+  ```bash
+  poetry add git+https://github.com/mingi3314/pyrb.git
+  ```
 
 Or, clone the repository and install manually:
 
 ```bash
-git clone https://github.com/yourusername/pyrb.git
+git clone https://github.com/mingi3314/pyrb.git
 cd pyrb
 pip install .
 ```
