@@ -2,8 +2,6 @@
   "editor.formatOnSave": true,
   "python.languageServer": "Pylance",
   "python.analysis.typeCheckingMode": "off",
-  "python.linting.mypyEnabled": true,
-  "python.linting.enabled": true,
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter",
     "editor.codeActionsOnSave": {
@@ -12,6 +10,7 @@
   },
   "black-formatter.importStrategy": "fromEnvironment",
   "ruff.importStrategy": "fromEnvironment",
+  "mypy-type-checker.importStrategy": "fromEnvironment",
   "git.branchProtection": [
     "main"
   ],
