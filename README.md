@@ -8,7 +8,6 @@
 
 ## Features
 
-- Real-time stock price fetching via EBest API
 - Portfolio analysis for asset allocation
 - Order placement for portfolio rebalancing
 - Supports multiple brokerages through a plug-and-play architecture
@@ -32,27 +31,53 @@ pip install .
 
 ## Usage
 
-First, set up your environment variables to configure EBest API keys:
+### 1. Set your account
+
+First, set up your account of a brokerage.
 
 ```bash
-export EBEST_APP_KEY="your_app_key_here"
-export EBEST_APP_SECRET="your_app_secret_here"
+pyrb account set
 ```
 
-If you want to use the paper trade mode, set up the environmental variables as follows:
+Then, the system would request you to enter the app key and app secret.
 
 ```bash
-export EBEST_PAPER_APP_KEY="your_paper_app_key_here"
-export EBEST_PAPER_APP_SECRET="your_paper_app_secret_here"
+>>> App key: <enter your app key>
+>>> App secret: <enter your app secret>
 ```
 
-Run the tool with:
+### 2. Rebalance your portfolio
+
+For example, you can rebalance your portfolio according to the All-weather asset allocation strategy.
 
 ```bash
-pyrb rebalance --investment-amount 1000
+pyrb asset-allocate --strategy all-weather-kr --investment-amount <amount-you-want-to-invest>
 ```
 
-This will fetch real-time prices and calculate optimal allocation for your portfolio with a total investment of ₩1000.
+Then the system would try to get confirmation from the user about the submition of orders to rebalance.
+
+```bash
+┏━━━━━━━━┳━━━━━━┳━━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Symbol ┃ Side ┃ Quantity ┃ Price ┃ Total Amount ┃ Current position value ┃ Expected position value ┃
+┡━━━━━━━━╇━━━━━━╇━━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ 379800 │ BUY  │ 378      │ 13545 │ 5120010      │ 1868930.0              │ 6988940.0               │
+│ 361580 │ BUY  │ 278      │ 18265 │ 5077670      │ 1917538.0              │ 6995208.0               │
+│ 411060 │ BUY  │ 370      │ 12200 │ 4514000      │ 1475979.0              │ 5989979.0               │
+│ 365780 │ BUY  │ 58       │ 88755 │ 5147790      │ 1774834.0              │ 6922624.0               │
+│ 308620 │ BUY  │ 476      │ 10945 │ 5209820      │ 1783768.0              │ 6993588.0               │
+│ 272580 │ BUY  │ 85       │ 52995 │ 4504575      │ 1483638.0              │ 5988213.0               │
+└────────┴──────┴──────────┴───────┴──────────────┴────────────────────────┴─────────────────────────┘
+
+Do you want to place these orders? [y/N]: 
+```
+
+### 3. Check your portfolio
+
+you can check your portfolio with the following command:
+
+```bash
+pyrb portfolio
+```
 
 ## Development
 
