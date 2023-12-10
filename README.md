@@ -16,18 +16,18 @@
 
 ## 설치 방법
 
-GitHub에서 `pyrb`를 직접 설치할 수 있습니다:
+Pip 혹은 Poetry로 `pyrb`를 직접 설치할 수 있습니다:
 
 - Pip
 
   ```bash
-  pip install git+https://github.com/mingi3314/pyrb.git
+  pip install pyrb
   ```
 
 - Poetry
 
   ```bash
-  poetry add git+https://github.com/mingi3314/pyrb.git
+  poetry add pyrb
   ```
 
 또는, 저장소를 클론하고 수동으로 설치하세요:
