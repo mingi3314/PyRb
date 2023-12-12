@@ -7,13 +7,13 @@ from rich.table import Table
 
 from pyrb.controller.cli.account import APP_NAME
 from pyrb.controller.cli.account import app as account_app
+from pyrb.enums import AssetAllocationStrategyEnum, OrderSide, OrderStatus
+from pyrb.model.order import Order
 from pyrb.repository.account import LocalConfigAccountRepository
-from pyrb.repository.brokerage.base.order_manager import Order, OrderSide, OrderStatus
 from pyrb.repository.brokerage.context import RebalanceContext, create_rebalance_context
 from pyrb.service.account import AccountService
 from pyrb.service.rebalance import Rebalancer
 from pyrb.service.strategy.asset_allocate import (
-    AssetAllocationStrategyEnum,
     AssetAllocationStrtegyFactory,
 )
 from pyrb.service.strategy.explicit_target import (

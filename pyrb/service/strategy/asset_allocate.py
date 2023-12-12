@@ -1,6 +1,6 @@
 from abc import abstractmethod
-from enum import StrEnum
 
+from pyrb.enums import AssetAllocationStrategyEnum
 from pyrb.service.strategy.base import Strategy
 
 
@@ -21,10 +21,6 @@ class AllWeatherKRStrategy(AssetAllocationStrategy):
             "308620": 0.175,  # (국채) KODEX 미국채10년선물
             "272580": 0.15,  # (현금성 자산) TIGER 단기채권액티브
         }
-
-
-class AssetAllocationStrategyEnum(StrEnum):
-    ALL_WEATHER_KR = "all-weather-kr"
 
 
 class AssetAllocationStrtegyFactory:
