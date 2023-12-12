@@ -25,6 +25,7 @@ class FakePortfolio(Portfolio):
                 sellable_quantity=100,
                 average_buy_price=100,
                 total_amount=10000,
+                rtn=0.0,
             ),
             Position(
                 symbol="005930",
@@ -32,6 +33,7 @@ class FakePortfolio(Portfolio):
                 sellable_quantity=50,
                 average_buy_price=150,
                 total_amount=7500,
+                rtn=0.0,
             ),
         ]
 
