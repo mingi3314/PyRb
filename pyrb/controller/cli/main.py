@@ -158,7 +158,14 @@ def portfolio() -> None:
     context = create_rebalance_context(account)
     context.portfolio.refresh()
 
-    table = Table("Symbol", "Quantity", "Sellable Quantity", "Average Buy Price", "Total Amount")
+    table = Table(
+        "Symbol",
+        "Quantity",
+        "Sellable Quantity",
+        "Average Buy Price",
+        "Total Amount",
+        "Return (%)",
+    )
 
     for position in context.portfolio.positions:
         table.add_row(
@@ -167,6 +174,7 @@ def portfolio() -> None:
             str(position.sellable_quantity),
             str(position.average_buy_price),
             str(position.total_amount),
+            str(position.rtn),
         )
 
     console.print(table)

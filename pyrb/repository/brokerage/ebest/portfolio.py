@@ -25,6 +25,7 @@ class EbestPortfolio(Portfolio):
                 sellable_quantity=item["mdposqt"],
                 average_buy_price=item["pamt"],
                 total_amount=item["appamt"],
+                rtn=item["sunikrt"],
             )
             for item in self._serialized_portfolio["t0424OutBlock1"]
         ]

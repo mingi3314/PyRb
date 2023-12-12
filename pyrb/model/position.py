@@ -7,3 +7,4 @@ class Position(BaseModel):
     sellable_quantity: PositiveInt  # 매도가능수량
     average_buy_price: PositiveFloat  # 매입단가
     total_amount: PositiveFloat  # 평가금액
+    rtn: float  # 수익률
