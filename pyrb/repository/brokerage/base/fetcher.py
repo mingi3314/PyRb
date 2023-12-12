@@ -1,12 +1,8 @@
 import abc
 
-from pydantic import BaseModel
+from pyrb.model.price import CurrentPrice
 
-
-class CurrentPrice(BaseModel):
-    symbol: str
-    price: int
-    # TODO: 우선매도잔량, 우선매수잔량 추가
+# TODO: 우선매도잔량, 우선매수잔량 추가
 
 
 class PriceFetcher(abc.ABC):

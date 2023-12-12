@@ -1,8 +1,11 @@
 import pytest
 
-from pyrb.repository.brokerage.base.fetcher import CurrentPrice, PriceFetcher
-from pyrb.repository.brokerage.base.order_manager import Order, OrderManager
-from pyrb.repository.brokerage.base.portfolio import Portfolio, Position
+from pyrb.model.order import Order
+from pyrb.model.position import Position
+from pyrb.model.price import CurrentPrice
+from pyrb.repository.brokerage.base.fetcher import PriceFetcher
+from pyrb.repository.brokerage.base.order_manager import OrderManager
+from pyrb.repository.brokerage.base.portfolio import Portfolio
 from pyrb.repository.brokerage.context import RebalanceContext
 
 

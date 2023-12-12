@@ -2,7 +2,8 @@ from typing import Any
 
 from pydantic import NonNegativeFloat
 
-from pyrb.repository.brokerage.base.portfolio import Portfolio, Position
+from pyrb.model.position import Position
+from pyrb.repository.brokerage.base.portfolio import Portfolio
 from pyrb.repository.brokerage.ebest.client import EbestAPIClient
 
 

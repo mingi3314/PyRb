@@ -1,13 +1,13 @@
 from math import floor
 
-from pyrb.exceptions import InsufficientFundsException, OrderPlacementError
-from pyrb.repository.brokerage.base.fetcher import CurrentPrice
-from pyrb.repository.brokerage.base.order_manager import (
-    Order,
+from pyrb.enums import (
     OrderSide,
     OrderStatus,
     OrderType,
 )
+from pyrb.exceptions import InsufficientFundsException, OrderPlacementError
+from pyrb.model.order import Order
+from pyrb.model.price import CurrentPrice
 from pyrb.repository.brokerage.base.portfolio import Portfolio
 from pyrb.repository.brokerage.context import RebalanceContext
 from pyrb.service.strategy.base import Strategy
