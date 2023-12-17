@@ -43,7 +43,9 @@ pip install .
 ### 1. 계좌 연동하기
 
 현재는 Ebest 계좌만 연동이 가능하며, API 연동을 위해 고유 토큰(APP_KEY, APP_SECRET)을 입력해야 합니다.
-만약 아직 토큰을 발급받지 않으셨다면, 아래 링크를 참고해주세요.
+
+- 만약 아직 토큰을 발급받지 않으셨다면, 아래 링크를 참고해주세요.
+`02. OPEN API 사용신청` 페이지에 `앱키(APP_KEY)`와 `시크릿키(APP_SECRET)`를 발급받는 방법이 설명되어 있습니다.
 <https://openapi.ebestsec.co.kr/howto-use>
 
 아래 명령어를 입력하여 증권사 계좌를 설정해주세요.
@@ -56,6 +58,8 @@ pyrb account set
 >>> App key: <enter your app key>
 >>> App secret: <enter your app secret>
 ```
+
+위 과정을 마쳤다면, 로컬 파일에 토큰 정보(앱키, 시크릿키)가 저장됩니다. 외부로 노출되지 않도록 주의해주세요.
 
 ### 2. 실행하기
 
@@ -92,6 +96,10 @@ Do you want to place these orders? [y/N]:
 ```bash
 pyrb portfolio
 ```
+
+## 참고 컨텐츠
+
+- [터미널로 레이달리오처럼 투자하기](https://pyrb.notion.site/72be8072f25f4a3680de53e7e719bb45)
 
 ## 개발
 
