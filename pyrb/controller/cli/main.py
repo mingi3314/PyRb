@@ -156,7 +156,6 @@ def portfolio() -> None:
 
     account = account_service.get()
     context = create_rebalance_context(account)
-    context.portfolio.refresh()
 
     table = Table(
         "Symbol",
