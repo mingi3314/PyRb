@@ -3,7 +3,6 @@ from typing import Any
 import requests
 from requests import Response
 
-from pyrb.exceptions import APIClientError
 from pyrb.model.account import EbestAccount
 from pyrb.repository.brokerage.base.client import BrokerageAPIClient
 
@@ -59,7 +58,8 @@ class EbestAPIClient(BrokerageAPIClient):
         try:
             response.raise_for_status()
         except requests.HTTPError:
-            error_code = response.json()["rsp_cd"]
-            error_msg = response.json()["rsp_msg"]
+            # error_code = response.json()["rsp_cd"]
+            # error_msg = response.json()["rsp_msg"]
             status_code = response.status_code
-            raise APIClientError(error_code, error_msg, status_code)
+            print(response)
+            raise Exception(f"API client error: {status_code}, {response}")
