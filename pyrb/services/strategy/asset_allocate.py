@@ -1,7 +1,7 @@
 from abc import abstractmethod
 
 from pyrb.enums import AssetAllocationStrategyEnum
-from pyrb.service.strategy.base import Strategy
+from pyrb.services.strategy.base import Strategy
 
 
 class AssetAllocationStrategy(Strategy):

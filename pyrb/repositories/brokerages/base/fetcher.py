@@ -1,6 +1,6 @@
 import abc
 
-from pyrb.model.price import CurrentPrice
+from pyrb.models.price import CurrentPrice
 
 # TODO: 우선매도잔량, 우선매수잔량 추가
 

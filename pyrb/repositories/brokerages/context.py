@@ -1,8 +1,8 @@
-from pyrb.model.account import Account
-from pyrb.repository.brokerage.base.fetcher import PriceFetcher
-from pyrb.repository.brokerage.base.order_manager import OrderManager
-from pyrb.repository.brokerage.base.portfolio import Portfolio
-from pyrb.repository.brokerage.factory import (
+from pyrb.models.account import Account
+from pyrb.repositories.brokerages.base.fetcher import PriceFetcher
+from pyrb.repositories.brokerages.base.order_manager import OrderManager
+from pyrb.repositories.brokerages.base.portfolio import Portfolio
+from pyrb.repositories.brokerages.factory import (
     BrokerageAPIClientFactory,
     OrderManagerFactory,
     PortfolioFactory,

@@ -6,7 +6,7 @@ from pathlib import Path
 import yaml
 
 from pyrb.exceptions import InvalidTargetError
-from pyrb.service.strategy.base import Strategy
+from pyrb.services.strategy.base import Strategy
 
 
 class ExplicitTargetRebalanceStrategy(Strategy):

@@ -1,12 +1,12 @@
 import pytest
 
-from pyrb.model.order import Order
-from pyrb.model.position import Position
-from pyrb.model.price import CurrentPrice
-from pyrb.repository.brokerage.base.fetcher import PriceFetcher
-from pyrb.repository.brokerage.base.order_manager import OrderManager
-from pyrb.repository.brokerage.base.portfolio import Portfolio
-from pyrb.repository.brokerage.context import RebalanceContext
+from pyrb.models.order import Order
+from pyrb.models.position import Position
+from pyrb.models.price import CurrentPrice
+from pyrb.repositories.brokerages.base.fetcher import PriceFetcher
+from pyrb.repositories.brokerages.base.order_manager import OrderManager
+from pyrb.repositories.brokerages.base.portfolio import Portfolio
+from pyrb.repositories.brokerages.context import RebalanceContext
 
 
 class FakePortfolio(Portfolio):

@@ -5,11 +5,11 @@ from pyrb.enums import (
     OrderType,
 )
 from pyrb.exceptions import InsufficientFundsException, OrderPlacementError
-from pyrb.model.order import Order, OrderPlacementResult
-from pyrb.model.price import CurrentPrice
-from pyrb.repository.brokerage.base.portfolio import Portfolio
-from pyrb.repository.brokerage.context import RebalanceContext
-from pyrb.service.strategy.base import Strategy
+from pyrb.models.order import Order, OrderPlacementResult
+from pyrb.models.price import CurrentPrice
+from pyrb.repositories.brokerages.base.portfolio import Portfolio
+from pyrb.repositories.brokerages.context import RebalanceContext
+from pyrb.services.strategy.base import Strategy
 
 
 class Rebalancer:

@@ -2,9 +2,9 @@ from requests import HTTPError
 
 from pyrb.enums import OrderType
 from pyrb.exceptions import OrderPlacementError
-from pyrb.model.order import Order
-from pyrb.repository.brokerage.base.order_manager import OrderManager
-from pyrb.repository.brokerage.ebest.client import EbestAPIClient
+from pyrb.models.order import Order
+from pyrb.repositories.brokerages.base.order_manager import OrderManager
+from pyrb.repositories.brokerages.ebest.client import EbestAPIClient
 
 
 class EbestOrderManager(OrderManager):

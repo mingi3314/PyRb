@@ -5,20 +5,20 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from pyrb.controller.cli.account import app as account_app
-from pyrb.controller.cli.account import create_account_service
+from pyrb.controllers.cli.account import app as account_app
+from pyrb.controllers.cli.account import create_account_service
 from pyrb.enums import AssetAllocationStrategyEnum, OrderSide
-from pyrb.model.order import Order, OrderPlacementResult
-from pyrb.repository.brokerage.context import RebalanceContext, create_rebalance_context
-from pyrb.service.rebalance import Rebalancer
-from pyrb.service.strategy.asset_allocate import (
+from pyrb.models.order import Order, OrderPlacementResult
+from pyrb.repositories.brokerages.context import RebalanceContext, create_rebalance_context
+from pyrb.services.rebalance import Rebalancer
+from pyrb.services.strategy.asset_allocate import (
     AssetAllocationStrtegyFactory,
 )
-from pyrb.service.strategy.explicit_target import (
+from pyrb.services.strategy.explicit_target import (
     ExplicitTargetRebalanceStrategy,
     read_targets_from_source,
 )
-from pyrb.service.strategy.holding_portfolio import HoldingPortfolioRebalanceStrategy
+from pyrb.services.strategy.holding_portfolio import HoldingPortfolioRebalanceStrategy
 
 app = typer.Typer()
 app.add_typer(account_app, name="account")
