@@ -1,6 +1,6 @@
 # pyrb - Python Rebalancer
 
-![Python](https://img.shields.io/badge/Python-v3.11-blue)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyrb)
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![Supported Brokerages](https://img.shields.io/badge/Supported%20Brokerages-EBest-orange)
 
