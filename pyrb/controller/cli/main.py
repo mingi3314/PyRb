@@ -5,13 +5,11 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from pyrb.controller.cli.account import APP_NAME
 from pyrb.controller.cli.account import app as account_app
+from pyrb.controller.cli.account import create_account_service
 from pyrb.enums import AssetAllocationStrategyEnum, OrderSide
 from pyrb.model.order import Order, OrderPlacementResult
-from pyrb.repository.account import LocalConfigAccountRepository
 from pyrb.repository.brokerage.context import RebalanceContext, create_rebalance_context
-from pyrb.service.account import AccountService
 from pyrb.service.rebalance import Rebalancer
 from pyrb.service.strategy.asset_allocate import (
     AssetAllocationStrtegyFactory,
@@ -40,26 +38,13 @@ def holding_portfolio(
     """
     Rebalances a holding portfolio with equal weights based on the specified options.
     """
-    app_config_dir = Path(typer.get_app_dir(APP_NAME))
-    accounts_config_path = app_config_dir / "accounts"
+    context = _create_context()
 
-    account_service = AccountService(
-        account_repo=LocalConfigAccountRepository(accounts_config_path)
-    )
-
-    account = account_service.get()
-    context = create_rebalance_context(account)
     strategy = HoldingPortfolioRebalanceStrategy(context)
     rebalancer = Rebalancer(context, strategy)
 
     orders = rebalancer.prepare_orders(investment_amount=investment_amount)
-
-    user_confirmation = _get_confirm_for_order_submit(context, orders)
-    if not user_confirmation:
-        typer.echo("No orders were placed")
-
-    results = rebalancer.place_orders(orders)
-    _report_orders(results)
+    _place_orders(context, rebalancer, orders)
 
 
 @app.command()
@@ -87,27 +72,14 @@ def explicit_target(
     Sum of target weights must be 1.0. If not, the weights will be normalized.
 
     """
-    app_config_dir = Path(typer.get_app_dir(APP_NAME))
-    accounts_config_path = app_config_dir / "accounts"
+    context = _create_context()
 
-    account_service = AccountService(
-        account_repo=LocalConfigAccountRepository(accounts_config_path)
-    )
-
-    account = account_service.get()
-    context = create_rebalance_context(account)
     targets = read_targets_from_source(targets_source)
     strategy = ExplicitTargetRebalanceStrategy(targets)
     rebalancer = Rebalancer(context, strategy)
 
     orders = rebalancer.prepare_orders(investment_amount=investment_amount)
-
-    user_confirmation = _get_confirm_for_order_submit(context, orders)
-    if not user_confirmation:
-        typer.echo("No orders were placed")
-
-    results = rebalancer.place_orders(orders)
-    _report_orders(results)
+    _place_orders(context, rebalancer, orders)
 
 
 @app.command()
@@ -119,40 +91,18 @@ def asset_allocate(
     Rebalances a portfolio with the specified asset allocation strategy.
 
     """
-    app_config_dir = Path(typer.get_app_dir(APP_NAME))
-    accounts_config_path = app_config_dir / "accounts"
-
-    account_service = AccountService(
-        account_repo=LocalConfigAccountRepository(accounts_config_path)
-    )
-
-    account = account_service.get()
-    context = create_rebalance_context(account)
+    context = _create_context()
 
     strategy = AssetAllocationStrtegyFactory().create(strategy)
     rebalancer = Rebalancer(context, strategy)
 
     orders = rebalancer.prepare_orders(investment_amount=investment_amount)
-
-    user_confirmation = _get_confirm_for_order_submit(context, orders)
-    if not user_confirmation:
-        typer.echo("No orders were placed")
-
-    results = rebalancer.place_orders(orders)
-    _report_orders(results)
+    _place_orders(context, rebalancer, orders)
 
 
 @app.command()
 def portfolio() -> None:
-    app_config_dir = Path(typer.get_app_dir(APP_NAME))
-    accounts_config_path = app_config_dir / "accounts"
-
-    account_service = AccountService(
-        account_repo=LocalConfigAccountRepository(accounts_config_path)
-    )
-
-    account = account_service.get()
-    context = create_rebalance_context(account)
+    context = _create_context()
 
     table = Table(
         "Symbol",
@@ -174,6 +124,22 @@ def portfolio() -> None:
         )
 
     console.print(table)
+
+
+def _create_context() -> RebalanceContext:
+    account_service = create_account_service()
+    account = account_service.get()
+    context = create_rebalance_context(account)
+    return context
+
+
+def _place_orders(context: RebalanceContext, rebalancer: Rebalancer, orders: list[Order]) -> None:
+    user_confirmation = _get_confirm_for_order_submit(context, orders)
+    if not user_confirmation:
+        typer.echo("No orders were placed")
+
+    results = rebalancer.place_orders(orders)
+    _report_orders(results)
 
 
 def _get_confirm_for_order_submit(context: RebalanceContext, orders: list[Order]) -> bool:
