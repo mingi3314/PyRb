@@ -41,6 +41,8 @@ class EbestOrderManager(OrderManager):
         }
 
         try:
-            self._api_client.send_request("POST", path, headers=headers, json=body)
+            resp = self._api_client.send_request("POST", path, headers=headers, json=body).json()
+            if resp.get("rsp_cd") != "00040":
+                raise OrderPlacementError(resp)
         except HTTPError as e:
             raise OrderPlacementError(e)
