@@ -16,7 +16,7 @@
 
 ## 설치 방법
 
-Pip 혹은 Poetry로 `pyrb`를 직접 설치할 수 있습니다:
+Pip 혹은 Poetry로 `pyrb`를 직접 설치할 수 있습니다 (python 3.8 이상 버전이 필요합니다.):
 
 - Pip
 
