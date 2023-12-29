@@ -21,6 +21,16 @@ class Portfolio(abc.ABC):
 
     @property
     @abc.abstractmethod
+    def cash_balance(self) -> NonNegativeFloat:
+        """Returns the cash balance of the portfolio.
+
+        Returns:
+            NonNegativeFloat: The cash balance of the portfolio.
+        """
+        ...
+
+    @property
+    @abc.abstractmethod
     def positions(self) -> list[Position]:
         """Returns a list of all positions in the portfolio.
 

@@ -2,8 +2,10 @@ from pathlib import Path
 from typing import Annotated, Literal
 
 import typer
+from rich import box
 from rich.console import Console
 from rich.table import Table
+from rich.text import Text
 
 from pyrb.controllers.cli.account import app as account_app
 from pyrb.controllers.cli.account import create_account_service
@@ -102,28 +104,13 @@ def asset_allocate(
 
 @app.command()
 def portfolio() -> None:
+    """
+    Display the portfolio table and summary.
+    """
     context = _create_context()
 
-    table = Table(
-        "Symbol",
-        "Quantity",
-        "Sellable Quantity",
-        "Average Buy Price",
-        "Total Amount",
-        "Return (%)",
-    )
-
-    for position in context.portfolio.positions:
-        table.add_row(
-            position.symbol,
-            _format(position.quantity, "number"),
-            _format(position.sellable_quantity, "number"),
-            _format(position.average_buy_price, "currency"),
-            _format(position.total_amount, "currency"),
-            _format(position.rtn, "percentage"),
-        )
-
-    console.print(table)
+    _print_portfolio_table(context)
+    _print_portfolio_summary(context)
 
 
 def _create_context() -> RebalanceContext:
@@ -198,6 +185,56 @@ def _format(value: float, format_type: Literal["number", "currency", "percentage
             return f"{value:.2%}"
         case _:
             raise NotImplementedError(f"Unsupported format type: {format_type}")
+
+
+def _print_portfolio_table(context: RebalanceContext) -> None:
+    columns = [
+        "Symbol",
+        "Quantity",
+        "Sellable Quantity",
+        "Average Buy Price",
+        "Total Amount",
+        "Return (%)",
+    ]
+
+    table = Table(
+        box=box.MINIMAL_DOUBLE_HEAD,
+        show_header=True,
+        header_style="bold magenta",
+    )
+
+    for column in columns:
+        table.add_column(column, justify="right")
+
+    for position in context.portfolio.positions:
+        if position.rtn > 0:
+            rtn_style = "red"
+        elif position.rtn == 0:
+            rtn_style = "black"
+        else:
+            rtn_style = "green"
+
+        table.add_row(
+            position.symbol,
+            _format(position.quantity, "number"),
+            _format(position.sellable_quantity, "number"),
+            _format(position.average_buy_price, "currency"),
+            _format(position.total_amount, "currency"),
+            Text(_format(position.rtn, "percentage"), style=rtn_style),
+        )
+
+    console.print(table)
+
+
+def _print_portfolio_summary(context: RebalanceContext) -> None:
+    cash_balance = context.portfolio.cash_balance
+    total_asset_value = sum(p.total_amount for p in context.portfolio.positions)
+    total_portfolio_value = total_asset_value + cash_balance
+
+    console.print(Text("\nPortfolio Summary:", style="bold underline"))
+    console.print(f"Total Asset Value: {_format(total_asset_value, 'currency')}")
+    console.print(f"Cash Balance: {_format(cash_balance, 'currency')}")
+    console.print(f"Total Portfolio Value: {_format(total_portfolio_value, 'currency')}")
 
 
 if __name__ == "__main__":
