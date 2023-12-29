@@ -17,6 +17,10 @@ class EbestPortfolio(Portfolio):
         return self._serialized_portfolio["t0424OutBlock"]["sunamt"]
 
     @property
+    def cash_balance(self) -> NonNegativeFloat:
+        return self._serialized_portfolio["t0424OutBlock"]["sunamt1"]
+
+    @property
     def positions(self) -> list[Position]:
         positions = [
             Position(
