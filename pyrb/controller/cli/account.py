@@ -20,6 +20,12 @@ def set(
         BrokerageType, typer.Option(help="brokerage type", case_sensitive=False)
     ] = BrokerageType.EBEST,
 ) -> None:
+    account_service = create_account_service()
+    account = AccountFactory.create(brokerage, app_key=app_key, app_secret=app_secret)
+    account_service.set(account=account)
+
+
+def create_account_service() -> AccountService:
     app_config_dir = Path(typer.get_app_dir(APP_NAME))
     accounts_config_path = app_config_dir / "accounts"
 
@@ -27,5 +33,4 @@ def set(
         account_repo=LocalConfigAccountRepository(accounts_config_path)
     )
 
-    account = AccountFactory.create(brokerage, app_key=app_key, app_secret=app_secret)
-    account_service.set(account=account)
+    return account_service
