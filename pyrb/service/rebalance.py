@@ -2,11 +2,10 @@ from math import floor
 
 from pyrb.enums import (
     OrderSide,
-    OrderStatus,
     OrderType,
 )
 from pyrb.exceptions import InsufficientFundsException, OrderPlacementError
-from pyrb.model.order import Order
+from pyrb.model.order import Order, OrderPlacementResult
 from pyrb.model.price import CurrentPrice
 from pyrb.repository.brokerage.base.portfolio import Portfolio
 from pyrb.repository.brokerage.context import RebalanceContext
@@ -81,7 +80,7 @@ class Rebalancer:
         orders.sort(key=lambda order: order.side == OrderSide.SELL, reverse=True)
         return orders
 
-    def place_orders(self, orders: list[Order]) -> None:
+    def place_orders(self, orders: list[Order]) -> list[OrderPlacementResult]:
         """
         Place a list of orders in the market.
         The status of each order will be updated based on the result of the order placement.
@@ -90,15 +89,19 @@ class Rebalancer:
             orders (list[Order]): A list of orders to be placed in the market.
 
         Returns:
-            None
+            list[OrderPlacementResult]: A list of order placement results.
         """
+        res = []
+
         for order in orders:
             try:
                 self._context.order_manager.place_order(order)
-                order.status = OrderStatus.PLACED
+                res.append(OrderPlacementResult(order=order, success=True))
 
-            except OrderPlacementError:
-                order.status = OrderStatus.REJECTED  # TODO: handle rejected orders
+            except OrderPlacementError as e:
+                res.append(OrderPlacementResult(order=order, success=False, message=str(e)))
+
+        return res
 
     def _validate_investment_amount(self, investment_amount: float) -> None:
         if investment_amount > self._context.portfolio.total_value:

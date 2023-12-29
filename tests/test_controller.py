@@ -3,7 +3,7 @@ from pytest_mock import MockerFixture
 from typer.testing import CliRunner
 
 from pyrb.controller.cli.main import app
-from pyrb.enums import OrderSide, OrderStatus, OrderType
+from pyrb.enums import OrderSide, OrderType
 from pyrb.exceptions import InsufficientFundsException
 from pyrb.model.order import Order
 from pyrb.repository.brokerage.context import RebalanceContext
@@ -36,7 +36,6 @@ def test_sut_rebalances(fake_rebalance_context: RebalanceContext, mocker: Mocker
                 quantity=95,
                 side=OrderSide.SELL,
                 order_type=OrderType.MARKET,
-                status=OrderStatus.PLACED,
             ),
         ),
         mocker.call(
@@ -46,7 +45,6 @@ def test_sut_rebalances(fake_rebalance_context: RebalanceContext, mocker: Mocker
                 quantity=47,
                 side=OrderSide.SELL,
                 order_type=OrderType.MARKET,
-                status=OrderStatus.PLACED,
             ),
         ),
     ]
@@ -190,7 +188,6 @@ def test_sut_rebalance_with_explicit_target_from_json_source(
             quantity=24,
             side=OrderSide.SELL,
             order_type=OrderType.MARKET,
-            status=OrderStatus.PLACED,
         ),
         Order(
             symbol="000660",
@@ -198,7 +195,6 @@ def test_sut_rebalance_with_explicit_target_from_json_source(
             quantity=70,
             side=OrderSide.SELL,
             order_type=OrderType.MARKET,
-            status=OrderStatus.PLACED,
         ),
         Order(
             symbol="035420",
@@ -206,6 +202,5 @@ def test_sut_rebalance_with_explicit_target_from_json_source(
             quantity=30,
             side=OrderSide.BUY,
             order_type=OrderType.MARKET,
-            status=OrderStatus.PLACED,
         ),
     ]

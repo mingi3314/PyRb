@@ -7,8 +7,8 @@ from rich.table import Table
 
 from pyrb.controller.cli.account import APP_NAME
 from pyrb.controller.cli.account import app as account_app
-from pyrb.enums import AssetAllocationStrategyEnum, OrderSide, OrderStatus
-from pyrb.model.order import Order
+from pyrb.enums import AssetAllocationStrategyEnum, OrderSide
+from pyrb.model.order import Order, OrderPlacementResult
 from pyrb.repository.account import LocalConfigAccountRepository
 from pyrb.repository.brokerage.context import RebalanceContext, create_rebalance_context
 from pyrb.service.account import AccountService
@@ -52,15 +52,14 @@ def holding_portfolio(
     strategy = HoldingPortfolioRebalanceStrategy(context)
     rebalancer = Rebalancer(context, strategy)
 
-    orders = rebalancer.prepare_orders(investment_amount)
-    user_confirmation = _get_confirm_for_order_submit(context, orders)
+    orders = rebalancer.prepare_orders(investment_amount=investment_amount)
 
-    if user_confirmation:
-        rebalancer.place_orders(orders)
-    else:
+    user_confirmation = _get_confirm_for_order_submit(context, orders)
+    if not user_confirmation:
         typer.echo("No orders were placed")
 
-    _report_orders(orders)
+    results = rebalancer.place_orders(orders)
+    _report_orders(results)
 
 
 @app.command()
@@ -102,14 +101,13 @@ def explicit_target(
     rebalancer = Rebalancer(context, strategy)
 
     orders = rebalancer.prepare_orders(investment_amount=investment_amount)
-    user_confirmation = _get_confirm_for_order_submit(context, orders)
 
-    if user_confirmation:
-        rebalancer.place_orders(orders)
-    else:
+    user_confirmation = _get_confirm_for_order_submit(context, orders)
+    if not user_confirmation:
         typer.echo("No orders were placed")
 
-    _report_orders(orders)
+    results = rebalancer.place_orders(orders)
+    _report_orders(results)
 
 
 @app.command()
@@ -135,14 +133,13 @@ def asset_allocate(
     rebalancer = Rebalancer(context, strategy)
 
     orders = rebalancer.prepare_orders(investment_amount=investment_amount)
-    user_confirmation = _get_confirm_for_order_submit(context, orders)
 
-    if user_confirmation:
-        rebalancer.place_orders(orders)
-    else:
+    user_confirmation = _get_confirm_for_order_submit(context, orders)
+    if not user_confirmation:
         typer.echo("No orders were placed")
 
-    _report_orders(orders)
+    results = rebalancer.place_orders(orders)
+    _report_orders(results)
 
 
 @app.command()
@@ -215,13 +212,13 @@ def _get_confirm_for_order_submit(context: RebalanceContext, orders: list[Order]
     return typer.confirm("Do you want to place these orders?")
 
 
-def _report_orders(orders: list[Order]) -> None:
+def _report_orders(order_placement_results: list[OrderPlacementResult]) -> None:
     """Provides a summary of successful and failed orders."""
-    for order in orders:
-        if order.status == OrderStatus.PLACED:
-            typer.echo(f"Successfully placed order: {order}")
-        elif order.status == OrderStatus.REJECTED:
-            typer.echo(f"Failed to place order: {order}")
+    for res in order_placement_results:
+        if res.success:
+            typer.echo(f"Successfully placed order: {res.order}")
+        else:
+            typer.echo(f"Failed to place order: {res.order} ({res.message})")
 
 
 if __name__ == "__main__":
