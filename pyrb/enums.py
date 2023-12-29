@@ -21,12 +21,5 @@ class OrderSide(StrEnum):
     SELL = "SELL"
 
 
-class OrderStatus(StrEnum):
-    PENDING = "PENDING"
-    PLACED = "PLACED"
-    REJECTED = "REJECTED"
-    CANCELLED = "CANCELLED"
-
-
 class AssetAllocationStrategyEnum(StrEnum):
     ALL_WEATHER_KR = "all-weather-kr"
