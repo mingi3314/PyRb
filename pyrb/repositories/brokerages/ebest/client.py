@@ -3,8 +3,8 @@ from typing import Any
 import requests
 from requests import Response
 
-from pyrb.model.account import EbestAccount
-from pyrb.repository.brokerage.base.client import BrokerageAPIClient
+from pyrb.models.account import EbestAccount
+from pyrb.repositories.brokerages.base.client import BrokerageAPIClient
 
 
 class EbestAPIClient(BrokerageAPIClient):

@@ -4,9 +4,9 @@ from typing import Annotated
 import typer
 
 from pyrb.enums import BrokerageType
-from pyrb.model.account import AccountFactory
-from pyrb.repository.account import LocalConfigAccountRepository
-from pyrb.service.account import AccountService
+from pyrb.models.account import AccountFactory
+from pyrb.repositories.account import LocalConfigAccountRepository
+from pyrb.services.account import AccountService
 
 app = typer.Typer()
 APP_NAME = "pyrb"  # TODO: parse from pyproject.toml and move to constants.py

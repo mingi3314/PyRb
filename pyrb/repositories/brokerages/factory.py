@@ -1,12 +1,12 @@
-from pyrb.model.account import Account, EbestAccount
-from pyrb.repository.brokerage.base.client import BrokerageAPIClient
-from pyrb.repository.brokerage.base.fetcher import PriceFetcher
-from pyrb.repository.brokerage.base.order_manager import OrderManager
-from pyrb.repository.brokerage.base.portfolio import Portfolio
-from pyrb.repository.brokerage.ebest.client import EbestAPIClient
-from pyrb.repository.brokerage.ebest.fetcher import EbestPriceFetcher
-from pyrb.repository.brokerage.ebest.order_manager import EbestOrderManager
-from pyrb.repository.brokerage.ebest.portfolio import EbestPortfolio
+from pyrb.models.account import Account, EbestAccount
+from pyrb.repositories.brokerages.base.client import BrokerageAPIClient
+from pyrb.repositories.brokerages.base.fetcher import PriceFetcher
+from pyrb.repositories.brokerages.base.order_manager import OrderManager
+from pyrb.repositories.brokerages.base.portfolio import Portfolio
+from pyrb.repositories.brokerages.ebest.client import EbestAPIClient
+from pyrb.repositories.brokerages.ebest.fetcher import EbestPriceFetcher
+from pyrb.repositories.brokerages.ebest.order_manager import EbestOrderManager
+from pyrb.repositories.brokerages.ebest.portfolio import EbestPortfolio
 
 
 class BrokerageAPIClientFactory:

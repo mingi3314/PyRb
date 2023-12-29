@@ -1,5 +1,5 @@
-from pyrb.model.account import Account
-from pyrb.repository.account import AccountRepository
+from pyrb.models.account import Account
+from pyrb.repositories.account import AccountRepository
 
 
 class AccountService:

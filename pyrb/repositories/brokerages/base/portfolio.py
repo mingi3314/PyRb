@@ -2,7 +2,7 @@ import abc
 
 from pydantic import NonNegativeFloat
 
-from pyrb.model.position import Position
+from pyrb.models.position import Position
 
 
 class Portfolio(abc.ABC):

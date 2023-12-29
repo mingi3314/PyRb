@@ -1,6 +1,6 @@
-from pyrb.model.price import CurrentPrice
-from pyrb.repository.brokerage.base.fetcher import PriceFetcher
-from pyrb.repository.brokerage.ebest.client import EbestAPIClient
+from pyrb.models.price import CurrentPrice
+from pyrb.repositories.brokerages.base.fetcher import PriceFetcher
+from pyrb.repositories.brokerages.ebest.client import EbestAPIClient
 
 
 class EbestPriceFetcher(PriceFetcher):

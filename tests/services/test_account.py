@@ -1,15 +1,15 @@
 import tempfile
-from pathlib import Path
 from collections.abc import Generator
+from pathlib import Path
 
 import pytest
 from pytest_mock import MockerFixture
 
 from pyrb.enums import BrokerageType
 from pyrb.exceptions import InitializationError
-from pyrb.model.account import Account, AccountFactory
-from pyrb.repository.account import LocalConfigAccountRepository
-from pyrb.service.account import AccountService
+from pyrb.models.account import Account, AccountFactory
+from pyrb.repositories.account import LocalConfigAccountRepository
+from pyrb.services.account import AccountService
 
 
 @pytest.fixture

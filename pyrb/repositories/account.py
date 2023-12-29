@@ -4,7 +4,7 @@ from pathlib import Path
 import toml
 
 from pyrb.exceptions import InitializationError
-from pyrb.model.account import Account, AccountFactory
+from pyrb.models.account import Account, AccountFactory
 
 
 class AccountRepository(ABC):

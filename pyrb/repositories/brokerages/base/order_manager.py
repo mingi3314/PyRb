@@ -1,6 +1,6 @@
 import abc
 
-from pyrb.model.order import Order
+from pyrb.models.order import Order
 
 
 class OrderManager(abc.ABC):
