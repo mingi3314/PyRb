@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Literal
 
 import typer
 from rich.console import Console
@@ -116,11 +116,11 @@ def portfolio() -> None:
     for position in context.portfolio.positions:
         table.add_row(
             position.symbol,
-            str(position.quantity),
-            str(position.sellable_quantity),
-            str(position.average_buy_price),
-            str(position.total_amount),
-            str(position.rtn),
+            _format(position.quantity, "number"),
+            _format(position.sellable_quantity, "number"),
+            _format(position.average_buy_price, "currency"),
+            _format(position.total_amount, "currency"),
+            _format(position.rtn, "percentage"),
         )
 
     console.print(table)
@@ -166,11 +166,11 @@ def _get_confirm_for_order_submit(context: RebalanceContext, orders: list[Order]
         table.add_row(
             order.symbol,
             order.side,
-            str(order.quantity),
-            str(order.price),
-            str(total_amount),
-            str(current_position_value),
-            str(expected_position_value),
+            _format(order.quantity, "number"),
+            _format(order.price, "currency"),
+            _format(total_amount, "currency"),
+            _format(current_position_value, "currency"),
+            _format(expected_position_value, "currency"),
         )
 
     console.print(table)
@@ -185,6 +185,19 @@ def _report_orders(order_placement_results: list[OrderPlacementResult]) -> None:
             typer.echo(f"Successfully placed order: {res.order}")
         else:
             typer.echo(f"Failed to place order: {res.order} ({res.message})")
+
+
+def _format(value: float, format_type: Literal["number", "currency", "percentage"]) -> str:
+    """Format a number."""
+    match format_type:
+        case "number":
+            return f"{value:.2f}"
+        case "currency":
+            return f"₩{value:,.0f}"
+        case "percentage":
+            return f"{value:.2%}"
+        case _:
+            raise NotImplementedError(f"Unsupported format type: {format_type}")
 
 
 if __name__ == "__main__":
