@@ -9,7 +9,7 @@ readme = "README.md"
 pyrb = "pyrb.controllers.cli.main:app"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.8"
 click = "^8.1.6"
 pydantic = "^2.1.1"
 requests = "^2.31.0"
