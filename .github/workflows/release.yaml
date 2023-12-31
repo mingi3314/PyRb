@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  create-release:
+  create-release-and-publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,30 +18,22 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
+      - name: Install Poetry
         run: |
-          python -m pip install --upgrade pip
-          pip install toml
+          curl -sSL https://install.python-poetry.org | python3 -
+
+      - name: Install dependencies with Poetry
+        run: |
+          poetry add toml
 
       - name: Determine Version Change
         id: version_check
         run: |
-          # Function to extract version from pyproject.toml
-          function get_current_version() {
-            python -c "import toml; print('v' + toml.load('pyproject.toml')['tool']['poetry']['version'])"
-          }
-
-          # Function to get the latest release version from GitHub
-          function get_latest_release_version() {
-            curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                  https://api.github.com/repos/${{ github.repository }}/releases/latest \
-            | jq -r '.tag_name'
-          }
-
-          VERSION=$(get_current_version)
+          VERSION="v$(poetry version -s)"
           echo "Current version: $VERSION"
 
-          LATEST_RELEASE=$(get_latest_release_version)
+          LATEST_RELEASE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r '.tag_name')
           echo "Latest release version: $LATEST_RELEASE"
 
           if [ "$VERSION" != "$LATEST_RELEASE" ]; then
@@ -59,3 +51,13 @@ jobs:
         with:
           tag_name: ${{ steps.version_check.outputs.new_version }}
           generate_release_notes: True
+
+      - name: Configure Poetry for PyPI
+        run: |
+          poetry config pypi-token.pypi ${{ secrets.PYPI_API_TOKEN }}
+
+      - name: Build and publish to PyPI
+        if: steps.version_check.outputs.version_changed == 'true'
+        run: |
+          poetry build
+          poetry publish
