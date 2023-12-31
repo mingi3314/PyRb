@@ -3,7 +3,7 @@ name: Automated Release Process
 on:
   push:
     branches:
-      - main
+      - 12-31-_add_release_workflow
 
 jobs:
   create-release:
