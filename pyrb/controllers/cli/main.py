@@ -121,9 +121,23 @@ def _create_context() -> RebalanceContext:
 
 
 def _place_orders(context: RebalanceContext, rebalancer: Rebalancer, orders: list[Order]) -> None:
+    """
+    Places the given orders using the provided rebalancer.
+    Before placing the orders, the user is asked to confirm the orders.
+    If the user does not confirm, the orders are not placed.
+
+    Args:
+        context (RebalanceContext): The context for rebalancing.
+        rebalancer (Rebalancer): The rebalancer object used for placing orders.
+        orders (list[Order]): The list of orders to be placed.
+
+    Returns:
+        None
+    """
     user_confirmation = _get_confirm_for_order_submit(context, orders)
     if not user_confirmation:
         typer.echo("No orders were placed")
+        return
 
     results = rebalancer.place_orders(orders)
     _report_orders(results)
