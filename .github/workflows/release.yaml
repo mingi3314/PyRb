@@ -58,5 +58,5 @@ jobs:
       - name: Create Release
         if: steps.version_check.outputs.version_changed == 'true'
         uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.version_check.outputs.new_version }}
