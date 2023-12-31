@@ -46,11 +46,11 @@ jobs:
 
           if [ "$VERSION" != "$LATEST_RELEASE" ]; then
             echo "Version has changed."
-            echo "version_changed=true" >> $GITHUB_ENV
-            echo "new_version=$VERSION" >> $GITHUB_ENV
+            echo "version_changed=true" >> $GITHUB_OUTPUT
+            echo "new_version=$VERSION" >> $GITHUB_OUTPUT
           else
             echo "No version change detected."
-            echo "version_changed=false" >> $GITHUB_ENV
+            echo "version_changed=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Create Release
