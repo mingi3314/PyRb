@@ -17,6 +17,10 @@ class FakePortfolio(Portfolio):
         return 100000
 
     @property
+    def cash_balance(self) -> float:
+        return 0
+
+    @property
     def positions(self) -> list[Position]:
         return [
             Position(
