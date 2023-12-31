@@ -3,7 +3,7 @@ name: Automated Release Process
 on:
   push:
     branches:
-      - 12-31-_add_release_workflow
+      - main
 
 jobs:
   create-release:
@@ -28,7 +28,7 @@ jobs:
         run: |
           # Function to extract version from pyproject.toml
           function get_current_version() {
-            python -c "import toml; print(toml.load('pyproject.toml')['tool']['poetry']['version'])"
+            python -c "import toml; print('v' + toml.load('pyproject.toml')['tool']['poetry']['version'])"
           }
 
           # Function to get the latest release version from GitHub
@@ -47,12 +47,10 @@ jobs:
           if [ "$VERSION" != "$LATEST_RELEASE" ]; then
             echo "Version has changed."
             echo "version_changed=true" >> $GITHUB_ENV
-            echo ::set-output name=version_changed::true
-            echo ::set-output name=new_version::$VERSION
+            echo "new_version=$VERSION" >> $GITHUB_ENV
           else
             echo "No version change detected."
             echo "version_changed=false" >> $GITHUB_ENV
-            echo ::set-output name=version_changed::false
           fi
 
       - name: Create Release
@@ -60,3 +58,4 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.version_check.outputs.new_version }}
+          generate_release_notes: True
