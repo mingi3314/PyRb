@@ -226,7 +226,7 @@ def _print_portfolio_table(context: RebalanceContext) -> None:
         elif position.rtn == 0:
             rtn_style = "black"
         else:
-            rtn_style = "green"
+            rtn_style = "blue"
 
         table.add_row(
             position.symbol,
