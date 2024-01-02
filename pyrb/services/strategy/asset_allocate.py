@@ -23,7 +23,7 @@ class AllWeatherKRStrategy(AssetAllocationStrategy):
         }
 
 
-class AssetAllocationStrtegyFactory:
+class AssetAllocationStrategyFactory:
     def create(self, strategy_type: AssetAllocationStrategyEnum) -> AssetAllocationStrategy:
         if strategy_type == AssetAllocationStrategyEnum.ALL_WEATHER_KR:
             return AllWeatherKRStrategy()
