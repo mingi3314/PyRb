@@ -14,7 +14,7 @@ from pyrb.models.order import Order, OrderPlacementResult
 from pyrb.repositories.brokerages.context import RebalanceContext, create_rebalance_context
 from pyrb.services.rebalance import Rebalancer
 from pyrb.services.strategy.asset_allocate import (
-    AssetAllocationStrtegyFactory,
+    AssetAllocationStrategyFactory,
 )
 from pyrb.services.strategy.explicit_target import (
     ExplicitTargetRebalanceStrategy,
@@ -95,7 +95,7 @@ def asset_allocate(
     """
     context = _create_context()
 
-    strategy = AssetAllocationStrtegyFactory().create(strategy)
+    strategy = AssetAllocationStrategyFactory().create(strategy)
     rebalancer = Rebalancer(context, strategy)
 
     orders = rebalancer.prepare_orders(investment_amount=investment_amount)
