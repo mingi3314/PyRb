@@ -45,4 +45,4 @@ class EbestOrderManager(OrderManager):
             if resp.get("rsp_cd") != "00040":
                 raise OrderPlacementError(resp)
         except HTTPError as e:
-            raise OrderPlacementError(e)
+            raise OrderPlacementError(e) from e

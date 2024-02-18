@@ -6,8 +6,6 @@ from pyrb.models.price import CurrentPrice
 
 
 class PriceFetcher(abc.ABC):
-    def __init__(self) -> None: ...
-
     @abc.abstractmethod
     def get_current_price(self, symbol: str) -> CurrentPrice:
         """특정 종목의 현재가를 조회합니다.

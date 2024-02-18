@@ -16,7 +16,7 @@ class AccountResponse(BaseModel):
 async def get_default_account(account_service: AccountServiceDep) -> AccountResponse:
     try:
         account = account_service.get()
-    except InitializationError:
-        raise HTTPException(status_code=404, detail="No accounts registered")
+    except InitializationError as e:
+        raise HTTPException(status_code=404, detail="No accounts registered") from e
 
     return AccountResponse(account=account)

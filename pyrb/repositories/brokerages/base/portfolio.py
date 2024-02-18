@@ -6,8 +6,6 @@ from pyrb.models.position import Position
 
 
 class Portfolio(abc.ABC):
-    def __init__(self) -> None: ...
-
     @property
     @abc.abstractmethod
     def total_value(self) -> NonNegativeFloat:

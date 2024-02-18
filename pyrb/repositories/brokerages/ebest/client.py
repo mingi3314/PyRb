@@ -57,9 +57,9 @@ class EbestAPIClient(BrokerageAPIClient):
     def _raise_for_status(self, response: Response) -> None:
         try:
             response.raise_for_status()
-        except requests.HTTPError:
+        except requests.HTTPError as e:
             # error_code = response.json()["rsp_cd"]
             # error_msg = response.json()["rsp_msg"]
             status_code = response.status_code
             print(response)
-            raise Exception(f"API client error: {status_code}, {response}")
+            raise Exception(f"API client error: {status_code}, {response}") from e
