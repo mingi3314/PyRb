@@ -2,7 +2,7 @@ from typing import Annotated
 
 import typer
 
-from pyrb.controllers.constants import APP_DIR
+from pyrb.controllers.constants import ACCOUNTS_CONFIG_PATH
 from pyrb.enums import BrokerageType
 from pyrb.models.account import AccountFactory
 from pyrb.repositories.account import LocalConfigAccountRepository
@@ -25,11 +25,8 @@ def set(
 
 
 def create_account_service() -> AccountService:
-    app_dir = APP_DIR
-    accounts_config_path = app_dir / "accounts"
-
     account_service = AccountService(
-        account_repo=LocalConfigAccountRepository(accounts_config_path)
+        account_repo=LocalConfigAccountRepository(ACCOUNTS_CONFIG_PATH)
     )
 
     return account_service
