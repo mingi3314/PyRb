@@ -1,14 +1,13 @@
 {
-  "editor.formatOnSave": true,
   "python.languageServer": "Pylance",
   "python.analysis.typeCheckingMode": "off",
   "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter",
     "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
       "source.organizeImports": "explicit"
     },
+    "editor.defaultFormatter": "charliermarsh.ruff"
   },
-  "black-formatter.importStrategy": "fromEnvironment",
   "ruff.importStrategy": "fromEnvironment",
   "mypy-type-checker.importStrategy": "fromEnvironment",
   "git.branchProtection": [
