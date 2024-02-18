@@ -4,8 +4,6 @@ from pyrb.models.order import Order
 
 
 class OrderManager(abc.ABC):
-    def __init__(self) -> None: ...
-
     @abc.abstractmethod
     def place_order(self, order: Order) -> None:
         """
