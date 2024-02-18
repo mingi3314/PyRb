@@ -1,15 +1,14 @@
-from pathlib import Path
 from typing import Annotated
 
 import typer
 
+from pyrb.controllers.constants import APP_DIR
 from pyrb.enums import BrokerageType
 from pyrb.models.account import AccountFactory
 from pyrb.repositories.account import LocalConfigAccountRepository
 from pyrb.services.account import AccountService
 
 app = typer.Typer()
-APP_NAME = "pyrb"  # TODO: parse from pyproject.toml and move to constants.py
 
 
 @app.command("set")
@@ -26,8 +25,8 @@ def set(
 
 
 def create_account_service() -> AccountService:
-    app_config_dir = Path(typer.get_app_dir(APP_NAME))
-    accounts_config_path = app_config_dir / "accounts"
+    app_dir = APP_DIR
+    accounts_config_path = app_dir / "accounts"
 
     account_service = AccountService(
         account_repo=LocalConfigAccountRepository(accounts_config_path)
