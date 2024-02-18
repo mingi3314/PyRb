@@ -14,16 +14,15 @@ click = "^8.1.6"
 pydantic = "^2.1.1"
 requests = "^2.31.0"
 pydantic-settings = "^2.0.3"
-typer = {extras = ["all"], version = "^0.9.0"}
+typer = { extras = ["all"], version = "^0.9.0" }
 toml = "^0.10.2"
 pyyaml = "^6.0.1"
 fastapi = "^0.109.2"
-uvicorn = {extras = ["standard"], version = "^0.27.1"}
+uvicorn = { extras = ["standard"], version = "^0.27.1" }
 
 [tool.poetry.group.dev.dependencies]
-ruff = "0.0.291"
-black = "23.9.1"
-mypy = "1.5.1"
+ruff = "0.2.1"
+mypy = "1.8.0"
 pre-commit = "^3.3.3"
 pytest = "^7.4.0"
 pytest-mock = "^3.11.1"
@@ -38,29 +37,64 @@ build-backend = "poetry.core.masonry.api"
 [tool.ruff]
 line-length = 100
 fix = true
+exclude = [
+    '*.pyi',
+    "site-packages",
+    "node_modules",
+    ".mypy_cache",
+    ".ruff_cache",
+]
+target-version = "py311"
 
-[tool.ruff.per-file-ignores]
-"__init__.py" = ["E402"]
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "UP", # pyupgrade
+]
+unfixable = ["B"] # Avoid trying to fix flake8-bugbear (`B`) violations.
+preview = true
 
-[tool.black]
-line-length = 100
-preview=true
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402", "F401"]
+"constants.py" = ["E501"]
+
+[tool.ruff.lint.flake8-bugbear]
+# Allow default arguments like, e.g., `data: List[str] = fastapi.Query(None)`.
+extend-immutable-calls = [
+    "fastapi.Body",
+    "fastapi.Depends",
+    "fastapi.Path",
+    "fastapi.Query",
+    "fastapi.security.http.HTTPBearer",
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["alphaship", "alphaverse"]
+known-third-party = ["fastapi", "pydantic", "starlette"]
+
+[tool.ruff.format]
+preview = true
 
 [tool.mypy]
-python_version = "3.11" 
-ignore_missing_imports = true 
-disallow_any_generics = true 
-disallow_untyped_calls= true 
-disallow_untyped_defs= true 
-disallow_incomplete_defs = true 
-disallow_untyped_decorators = true 
-check_untyped_defs = true 
-strict_optional = false 
-warn_redundant_casts = true 
-warn_unused_ignores = true 
-allow_redefinition = true 
-show_column_numbers = true 
-no_implicit_reexport = true 
+python_version = "3.11"
+ignore_missing_imports = true
+disallow_any_generics = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_decorators = true
+check_untyped_defs = true
+strict_optional = false
+warn_redundant_casts = true
+warn_unused_ignores = true
+allow_redefinition = true
+show_column_numbers = true
+no_implicit_reexport = true
 pretty = true
 
 plugins = ["pydantic.mypy"]
