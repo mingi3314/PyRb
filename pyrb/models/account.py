@@ -1,3 +1,4 @@
+import uuid
 from abc import ABC
 from typing import Annotated, Any
 
@@ -9,6 +10,7 @@ from pyrb.enums import BrokerageType
 
 class Account(BaseModel, ABC):
     brokerage: Annotated[BrokerageType, Field(...)]
+    id: uuid.UUID = Field(default_factory=uuid.uuid4)
 
     def to_toml(self) -> str:
         model_dict = self.model_dump()
