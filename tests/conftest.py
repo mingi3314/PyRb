@@ -1,12 +1,18 @@
+import tempfile
+from collections.abc import Generator
+from pathlib import Path
+
 import pytest
 
 from pyrb.models.order import Order
 from pyrb.models.position import Position
 from pyrb.models.price import CurrentPrice
+from pyrb.repositories.account import AccountRepository, LocalConfigAccountRepository
 from pyrb.repositories.brokerages.base.fetcher import PriceFetcher
 from pyrb.repositories.brokerages.base.order_manager import OrderManager
 from pyrb.repositories.brokerages.base.portfolio import Portfolio
 from pyrb.repositories.brokerages.context import RebalanceContext
+from pyrb.services.account import AccountService
 
 
 class FakePortfolio(Portfolio):
@@ -83,3 +89,16 @@ def fake_rebalance_context() -> RebalanceContext:
         price_fetcher=FakePriceFetcher(),
         order_manager=FakeOrderManager(),
     )
+
+
+@pytest.fixture
+def tmp_account_repo() -> Generator[AccountRepository, None, None]:
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        config_path = Path(tmpdirname) / "accounts"
+        account_repo = LocalConfigAccountRepository(config_path)
+        yield account_repo
+
+
+@pytest.fixture
+def account_service(tmp_account_repo: AccountRepository) -> AccountService:
+    return AccountService(tmp_account_repo)

@@ -1,28 +1,10 @@
-import tempfile
-from collections.abc import Generator
-from pathlib import Path
-
 import pytest
 from pytest_mock import MockerFixture
 
 from pyrb.enums import BrokerageType
 from pyrb.exceptions import InitializationError
 from pyrb.models.account import Account, AccountFactory
-from pyrb.repositories.account import LocalConfigAccountRepository
 from pyrb.services.account import AccountService
-
-
-@pytest.fixture
-def tmp_config_path() -> Generator[Path, None, None]:
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        config_path = Path(tmpdirname) / "accounts"
-        yield config_path
-
-
-@pytest.fixture
-def account_service(tmp_config_path: Path) -> AccountService:
-    account_repo = LocalConfigAccountRepository(tmp_config_path)
-    return AccountService(account_repo)
 
 
 def test_sut_get_account_with_local_config_account_repository(
