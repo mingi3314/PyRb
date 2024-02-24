@@ -13,8 +13,7 @@ class Account(BaseModel, ABC):
     id: uuid.UUID = Field(default_factory=uuid.uuid4)
 
     def to_toml(self) -> str:
-        model_dict = self.model_dump()
-        model_dict.update({"brokerage": self.brokerage.value})
+        model_dict = self.model_dump(mode="json")
         return toml.dumps(model_dict)
 
 
