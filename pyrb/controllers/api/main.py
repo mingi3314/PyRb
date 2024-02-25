@@ -1,13 +1,18 @@
+import datetime
 from uuid import UUID
+from zoneinfo import ZoneInfo
 
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from pydantic import AwareDatetime, BaseModel
 from starlette.status import HTTP_201_CREATED
 
-from pyrb.controllers.api.deps import AccountServiceDep
-from pyrb.enums import BrokerageType
+from pyrb.controllers.api.deps import AccountServiceDep, RebalanceContextDep
+from pyrb.enums import AssetAllocationStrategyEnum, BrokerageType
 from pyrb.exceptions import InitializationError
 from pyrb.models.account import Account, AccountFactory
+from pyrb.models.order import OrderPlacementResult
+from pyrb.services.rebalance import Rebalancer
+from pyrb.services.strategy.asset_allocate import AssetAllocationStrategyFactory
 
 app = FastAPI()
 
@@ -24,6 +29,15 @@ class AccountCreateRequest(BaseModel):
 
 class AccountCreateResponse(BaseModel):
     account_id: UUID
+
+
+class RebalanceRequest(BaseModel):
+    investment_amount: float | None
+
+
+class RebalanceResponse(BaseModel):
+    rebalanced_at: AwareDatetime
+    placed_orders: list[OrderPlacementResult]
 
 
 @app.get("/accounts/default", response_model=AccountResponse)
@@ -46,3 +60,20 @@ async def create_account(
     account_service.set(account)
 
     return AccountCreateResponse(account_id=account.id)
+
+
+# TODO: Swagger에서 StrEnum이 제대로 표시되지 않는 문제 원인 파악 후 수정
+@app.post("/strategies/{strategy_type}/rebalance", response_model=RebalanceResponse)
+async def rebalance(
+    context: RebalanceContextDep, strategy_type: AssetAllocationStrategyEnum, body: RebalanceRequest
+) -> RebalanceResponse:
+    strategy = AssetAllocationStrategyFactory.create(strategy_type)
+    rebalancer = Rebalancer(context, strategy)
+
+    orders = rebalancer.prepare_orders(investment_amount=body.investment_amount)
+    placed_orders = rebalancer.place_orders(orders)
+
+    return RebalanceResponse(
+        rebalanced_at=datetime.datetime.now(ZoneInfo("Asia/Seoul")),
+        placed_orders=placed_orders,
+    )

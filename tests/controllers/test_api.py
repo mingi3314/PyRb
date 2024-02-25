@@ -4,9 +4,10 @@ import pytest
 from fastapi.testclient import TestClient
 from httpx import Response
 
-from pyrb.controllers.api.deps import account_repo_dep
+from pyrb.controllers.api.deps import account_repo_dep, context_dep
 from pyrb.controllers.api.main import app
 from pyrb.repositories.account import AccountRepository
+from pyrb.repositories.brokerages.context import RebalanceContext
 
 client = TestClient(app)
 
@@ -65,3 +66,19 @@ def test_get_default_account_without_created_account() -> None:
     # Then
     assert response.status_code == 404
     assert response.json() == {"detail": "No accounts registered"}
+
+
+def test_rebalance(fake_rebalance_context: RebalanceContext) -> None:
+    # Given
+    create_account()
+    app.dependency_overrides[context_dep] = lambda: fake_rebalance_context
+
+    # When
+    response = client.post(
+        "strategies/all-weather-kr/rebalance",
+        json={"investment_amount": 100000},
+    )
+
+    # Then
+    assert response.status_code == 200
+    app.dependency_overrides.clear()
