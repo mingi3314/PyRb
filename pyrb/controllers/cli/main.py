@@ -95,7 +95,7 @@ def asset_allocate(
     """
     context = _create_context()
 
-    strategy = AssetAllocationStrategyFactory().create(strategy)
+    strategy = AssetAllocationStrategyFactory.create(strategy)
     rebalancer = Rebalancer(context, strategy)
 
     orders = rebalancer.prepare_orders(investment_amount=investment_amount)
