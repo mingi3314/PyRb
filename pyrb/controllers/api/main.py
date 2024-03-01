@@ -3,6 +3,7 @@ from uuid import UUID
 from zoneinfo import ZoneInfo
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import AwareDatetime, BaseModel
 from starlette.status import HTTP_201_CREATED
 
@@ -15,6 +16,17 @@ from pyrb.services.rebalance import Rebalancer
 from pyrb.services.strategy.asset_allocate import AssetAllocationStrategyFactory
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost",
+        "http://localhost:1420",  # tauri
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class AccountResponse(BaseModel):
