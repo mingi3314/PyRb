@@ -19,14 +19,16 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost",
-        "http://localhost:1420",  # tauri
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.get("/ping")
+async def ping() -> str:
+    return "pong"
 
 
 class AccountResponse(BaseModel):
