@@ -53,7 +53,6 @@ class EbestPortfolio(Portfolio):
     def _fetch_portfolio(self) -> dict[str, Any]:
         asset_balance = self._fetch_assets_balance()
         cash_balance = self._fetch_cash_balance()
-        print(asset_balance | cash_balance)
         return asset_balance | cash_balance
 
     def _fetch_assets_balance(self) -> dict[str, Any]:
