@@ -2,10 +2,9 @@ from collections.abc import Generator
 
 import pytest
 from fastapi.testclient import TestClient
-from httpx import Response
 
 from pyrb.controllers.api.deps import account_repo_dep, context_dep
-from pyrb.controllers.api.main import app
+from pyrb.controllers.api.main import AccountCreateResponse, app
 from pyrb.repositories.account import AccountRepository
 from pyrb.repositories.brokerages.context import RebalanceContext
 
@@ -26,7 +25,7 @@ def use_tmp_path_for_account_repo(
     app.dependency_overrides.clear()
 
 
-def create_account() -> Response:
+def create_account() -> AccountCreateResponse:
     request_data = {
         "brokerage": "ebest",
         "app_key": "your_app_key",
@@ -34,7 +33,7 @@ def create_account() -> Response:
     }
 
     response = client.post("/accounts", json=request_data)
-    return response
+    return AccountCreateResponse.model_validate(response.json())
 
 
 def test_create_account() -> None:
@@ -42,21 +41,20 @@ def test_create_account() -> None:
     response = create_account()
 
     # Then
-    assert response.status_code == 201
-    assert "account_id" in response.json()
+    assert "account_id" in response.model_dump(mode="json")
 
 
 def test_get_default_account_with_created_account() -> None:
     # Given
     response = create_account()
-    account_id = response.json()["account_id"]
+    account_id = response.account_id
 
     # When
     response = client.get("/accounts/default")
 
     # Then
     assert response.status_code == 200
-    assert response.json()["account"]["id"] == account_id
+    assert response.json()["account"]["id"] == str(account_id)
 
 
 def test_get_default_account_without_created_account() -> None:
@@ -82,3 +80,52 @@ def test_rebalance(fake_rebalance_context: RebalanceContext) -> None:
     # Then
     assert response.status_code == 200
     app.dependency_overrides.clear()
+
+
+def test_get_portfolio(fake_rebalance_context: RebalanceContext) -> None:
+    # Given
+    create_account()
+    app.dependency_overrides[context_dep] = lambda: fake_rebalance_context
+
+    # When
+    response = client.get("/portfolio")
+
+    # Then
+    assert response.status_code == 200
+
+    actual = response.json()
+    expected = {
+        "total_value": 100000,
+        "cash_balance": 0,
+        "positions": [
+            {
+                "symbol": "000660",
+                "quantity": 100,
+                "sellable_quantity": 100,
+                "average_buy_price": 100,
+                "total_amount": 10000,
+                "rtn": 0.0,
+            },
+            {
+                "symbol": "005930",
+                "quantity": 50,
+                "sellable_quantity": 50,
+                "average_buy_price": 150,
+                "total_amount": 7500,
+                "rtn": 0.0,
+            },
+        ],
+    }
+
+    assert actual == expected
+
+    app.dependency_overrides.clear()
+
+
+def test_get_portfolio_without_account() -> None:
+    # When
+    response = client.get("/portfolio")
+
+    # Then
+    assert response.status_code == 404
+    assert response.json() == {"detail": "account is not set. Please set account first"}

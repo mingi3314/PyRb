@@ -12,6 +12,7 @@ from pyrb.enums import AssetAllocationStrategyEnum, BrokerageType
 from pyrb.exceptions import InitializationError
 from pyrb.models.account import Account, AccountFactory
 from pyrb.models.order import OrderPlacementResult
+from pyrb.models.position import Position
 from pyrb.services.rebalance import Rebalancer
 from pyrb.services.strategy.asset_allocate import AssetAllocationStrategyFactory
 
@@ -45,6 +46,12 @@ class AccountCreateResponse(BaseModel):
     account_id: UUID
 
 
+class PortfolioResponse(BaseModel):
+    total_value: float
+    cash_balance: float
+    positions: list[Position]
+
+
 class RebalanceRequest(BaseModel):
     investment_amount: float | None
 
@@ -74,6 +81,17 @@ async def create_account(
     account_service.set(account)
 
     return AccountCreateResponse(account_id=account.id)
+
+
+@app.get("/portfolio", response_model=PortfolioResponse)
+async def get_portfolio(context: RebalanceContextDep) -> PortfolioResponse:
+    portfolio = context.portfolio
+
+    return PortfolioResponse(
+        total_value=portfolio.total_value,
+        cash_balance=portfolio.cash_balance,
+        positions=portfolio.positions,
+    )
 
 
 # TODO: Swagger에서 StrEnum이 제대로 표시되지 않는 문제 원인 파악 후 수정
