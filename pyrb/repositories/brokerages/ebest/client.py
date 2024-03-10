@@ -58,8 +58,8 @@ class EbestAPIClient(BrokerageAPIClient):
         try:
             response.raise_for_status()
         except requests.HTTPError as e:
+            # TODO: 에러코드, 메시지가 없는 경우 처리
             # error_code = response.json()["rsp_cd"]
             # error_msg = response.json()["rsp_msg"]
             status_code = response.status_code
-            print(response)
             raise Exception(f"API client error: {status_code}, {response}") from e
