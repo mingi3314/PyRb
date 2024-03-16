@@ -99,7 +99,7 @@ def test_get_portfolio(fake_rebalance_context: RebalanceContext) -> None:
         "cash_balance": 0,
         "positions": [
             {
-                "symbol": "000660",
+                "asset": {"symbol": "000660", "label": "SK하이닉스", "asset_class": "STOCK"},
                 "quantity": 100,
                 "sellable_quantity": 100,
                 "average_buy_price": 100,
@@ -107,7 +107,7 @@ def test_get_portfolio(fake_rebalance_context: RebalanceContext) -> None:
                 "rtn": 0.0,
             },
             {
-                "symbol": "005930",
+                "asset": {"symbol": "005930", "label": "삼성전자", "asset_class": "STOCK"},
                 "quantity": 50,
                 "sellable_quantity": 50,
                 "average_buy_price": 150,

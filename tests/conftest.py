@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 from pyrb.models.order import Order
-from pyrb.models.position import Position
+from pyrb.models.position import Asset, Position
 from pyrb.models.price import CurrentPrice
 from pyrb.repositories.account import AccountRepository, LocalConfigAccountRepository
 from pyrb.repositories.brokerages.base.fetcher import PriceFetcher
@@ -30,7 +30,7 @@ class FakePortfolio(Portfolio):
     def positions(self) -> list[Position]:
         return [
             Position(
-                symbol="000660",
+                asset=Asset(symbol="000660", label="SK하이닉스"),
                 quantity=100,
                 sellable_quantity=100,
                 average_buy_price=100,
@@ -38,7 +38,7 @@ class FakePortfolio(Portfolio):
                 rtn=0.0,
             ),
             Position(
-                symbol="005930",
+                asset=Asset(symbol="005930", label="삼성전자"),
                 quantity=50,
                 sellable_quantity=50,
                 average_buy_price=150,
@@ -49,10 +49,12 @@ class FakePortfolio(Portfolio):
 
     @property
     def holding_symbols(self) -> list[str]:
-        return [position.symbol for position in self.positions]
+        return [position.asset.symbol for position in self.positions]
 
     def get_position(self, symbol: str) -> Position | None:
-        return next((position for position in self.positions if position.symbol == symbol), None)
+        return next(
+            (position for position in self.positions if position.asset.symbol == symbol), None
+        )
 
     def get_position_amount(self, symbol: str) -> float:
         position = self.get_position(symbol)

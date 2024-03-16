@@ -23,3 +23,11 @@ class OrderSide(StrEnum):
 
 class AssetAllocationStrategyEnum(StrEnum):
     ALL_WEATHER_KR = "all-weather-kr"
+
+
+class AssetClassEnum(StrEnum):
+    STOCK = "STOCK"
+    BOND = "BOND"
+    CASH = "CASH"
+    COMMODITY = "COMMODITY"
+    OTHER = "OTHER"

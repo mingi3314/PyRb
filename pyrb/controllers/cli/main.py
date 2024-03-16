@@ -229,7 +229,7 @@ def _print_portfolio_table(context: RebalanceContext) -> None:
             rtn_style = "blue"
 
         table.add_row(
-            position.symbol,
+            position.asset.symbol,
             _format(position.quantity, "number"),
             _format(position.sellable_quantity, "number"),
             _format(position.average_buy_price, "currency"),

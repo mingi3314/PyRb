@@ -2,7 +2,7 @@ from typing import Any
 
 from pydantic import NonNegativeFloat
 
-from pyrb.models.position import Position
+from pyrb.models.position import Asset, Position
 from pyrb.repositories.brokerages.base.portfolio import Portfolio
 from pyrb.repositories.brokerages.ebest.client import EbestAPIClient
 
@@ -24,7 +24,7 @@ class EbestPortfolio(Portfolio):
     def positions(self) -> list[Position]:
         positions = [
             Position(
-                symbol=item["expcode"],
+                asset=Asset(symbol=item["expcode"], label=item["hname"]),
                 quantity=item["janqty"],
                 sellable_quantity=item["mdposqt"],
                 average_buy_price=item["pamt"],
@@ -38,10 +38,12 @@ class EbestPortfolio(Portfolio):
 
     @property
     def holding_symbols(self) -> list[str]:
-        return [position.symbol for position in self.positions]
+        return [position.asset.symbol for position in self.positions]
 
     def get_position(self, symbol: str) -> Position | None:
-        return next((position for position in self.positions if position.symbol == symbol), None)
+        return next(
+            (position for position in self.positions if position.asset.symbol == symbol), None
+        )
 
     def get_position_amount(self, symbol: str) -> NonNegativeFloat:
         position = self.get_position(symbol)
