@@ -121,6 +121,7 @@ def test_sut_stops_rebalancing_with_insufficient_funds(
 
     # then
     assert result.exit_code == 1
+    assert result.exc_info is not None
     assert result.exc_info[0] == InsufficientFundsException
 
 

@@ -11,7 +11,7 @@ from pyrb.controllers.api.deps import AccountServiceDep, RebalanceContextDep
 from pyrb.enums import AssetAllocationStrategyEnum, BrokerageType
 from pyrb.exceptions import InitializationError
 from pyrb.models.account import Account, AccountFactory
-from pyrb.models.order import OrderPlacementResult
+from pyrb.models.order import Order, OrderPlacementResult
 from pyrb.models.position import Position
 from pyrb.services.rebalance import Rebalancer
 from pyrb.services.strategy.asset_allocate import AssetAllocationStrategyFactory
@@ -52,12 +52,16 @@ class PortfolioResponse(BaseModel):
     positions: list[Position]
 
 
-class RebalanceRequest(BaseModel):
-    investment_amount: float | None
+class OrdersPrepareResponse(BaseModel):
+    orders: list[Order]
 
 
-class RebalanceResponse(BaseModel):
-    rebalanced_at: AwareDatetime
+class OrdersPlaceRequest(BaseModel):
+    orders: list[Order]
+
+
+class OrdersPlaceResponse(BaseModel):
+    placed_at: AwareDatetime
     placed_orders: list[OrderPlacementResult]
 
 
@@ -94,19 +98,32 @@ async def get_portfolio(context: RebalanceContextDep) -> PortfolioResponse:
     )
 
 
-# TODO: Swagger에서 StrEnum이 제대로 표시되지 않는 문제 원인 파악 후 수정
-@app.post("/strategies/{strategy_type}/rebalance", response_model=RebalanceResponse)
-async def rebalance(
-    context: RebalanceContextDep, strategy_type: AssetAllocationStrategyEnum, body: RebalanceRequest
-) -> RebalanceResponse:
+@app.get("/strategies/{strategy_type}/orders", response_model=OrdersPrepareResponse)
+async def prepare_orders(
+    context: RebalanceContextDep,
+    strategy_type: AssetAllocationStrategyEnum,
+) -> OrdersPrepareResponse:
     strategy = AssetAllocationStrategyFactory.create(strategy_type)
-    rebalancer = Rebalancer(context, strategy)
+    rebalancer = Rebalancer(context)
 
-    orders = rebalancer.prepare_orders(investment_amount=body.investment_amount)
-    placed_orders = rebalancer.place_orders(orders)
+    orders = rebalancer.prepare_orders(
+        strategy=strategy, investment_amount=context.portfolio.total_value * 0.99
+    )
 
-    return RebalanceResponse(
-        rebalanced_at=datetime.datetime.now(ZoneInfo("Asia/Seoul")),
+    return OrdersPrepareResponse(
+        orders=orders,
+    )
+
+
+@app.post("/strategies/{strategy_type}/orders", response_model=OrdersPlaceResponse)
+async def place_orders(
+    context: RebalanceContextDep,
+    body: OrdersPlaceRequest,
+) -> OrdersPlaceResponse:
+    rebalancer = Rebalancer(context)
+    placed_orders = rebalancer.place_orders(body.orders)
+    return OrdersPlaceResponse(
+        placed_at=datetime.datetime.now(ZoneInfo("Asia/Seoul")),
         placed_orders=placed_orders,
     )
 

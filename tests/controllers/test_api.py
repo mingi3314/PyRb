@@ -2,6 +2,7 @@ from collections.abc import Generator
 
 import pytest
 from fastapi.testclient import TestClient
+from freezegun import freeze_time
 
 from pyrb.controllers.api.deps import account_repo_dep, context_dep
 from pyrb.controllers.api.main import AccountCreateResponse, app
@@ -66,19 +67,153 @@ def test_get_default_account_without_created_account() -> None:
     assert response.json() == {"detail": "No accounts registered"}
 
 
-def test_rebalance(fake_rebalance_context: RebalanceContext) -> None:
+def test_prepare_orders(fake_rebalance_context: RebalanceContext) -> None:
     # Given
     create_account()
     app.dependency_overrides[context_dep] = lambda: fake_rebalance_context
 
     # When
-    response = client.post(
-        "strategies/all-weather-kr/rebalance",
-        json={"investment_amount": 100000},
+    response = client.get(
+        "/strategies/all-weather-kr/orders",
     )
 
     # Then
     assert response.status_code == 200
+    assert response.json() == {
+        "orders": [
+            {
+                "symbol": "379800",
+                "price": 100,
+                "quantity": 173,
+                "side": "BUY",
+                "order_type": "MARKET",
+            },
+            {
+                "symbol": "361580",
+                "price": 100,
+                "quantity": 173,
+                "side": "BUY",
+                "order_type": "MARKET",
+            },
+            {
+                "symbol": "411060",
+                "price": 100,
+                "quantity": 148,
+                "side": "BUY",
+                "order_type": "MARKET",
+            },
+            {
+                "symbol": "365780",
+                "price": 100,
+                "quantity": 173,
+                "side": "BUY",
+                "order_type": "MARKET",
+            },
+            {
+                "symbol": "308620",
+                "price": 100,
+                "quantity": 173,
+                "side": "BUY",
+                "order_type": "MARKET",
+            },
+            {
+                "symbol": "272580",
+                "price": 100,
+                "quantity": 148,
+                "side": "BUY",
+                "order_type": "MARKET",
+            },
+        ]
+    }
+    app.dependency_overrides.clear()
+
+
+@freeze_time("2024-01-03T00:00:00+09:00")
+def test_place_orders(fake_rebalance_context: RebalanceContext) -> None:
+    # Given
+    create_account()
+    app.dependency_overrides[context_dep] = lambda: fake_rebalance_context
+    orders = client.get("/strategies/all-weather-kr/orders").json()["orders"]
+
+    # When
+    response = client.post(
+        "/strategies/all-weather-kr/orders",
+        json={"orders": orders},
+    )
+
+    # Then
+    assert response.status_code == 200
+    assert response.json() == {
+        "placed_at": "2024-01-03T00:00:00+09:00",
+        "placed_orders": [
+            {
+                "order": {
+                    "symbol": "379800",
+                    "price": 100,
+                    "quantity": 173,
+                    "side": "BUY",
+                    "order_type": "MARKET",
+                },
+                "success": True,
+                "message": None,
+            },
+            {
+                "order": {
+                    "symbol": "361580",
+                    "price": 100,
+                    "quantity": 173,
+                    "side": "BUY",
+                    "order_type": "MARKET",
+                },
+                "success": True,
+                "message": None,
+            },
+            {
+                "order": {
+                    "symbol": "411060",
+                    "price": 100,
+                    "quantity": 148,
+                    "side": "BUY",
+                    "order_type": "MARKET",
+                },
+                "success": True,
+                "message": None,
+            },
+            {
+                "order": {
+                    "symbol": "365780",
+                    "price": 100,
+                    "quantity": 173,
+                    "side": "BUY",
+                    "order_type": "MARKET",
+                },
+                "success": True,
+                "message": None,
+            },
+            {
+                "order": {
+                    "symbol": "308620",
+                    "price": 100,
+                    "quantity": 173,
+                    "side": "BUY",
+                    "order_type": "MARKET",
+                },
+                "success": True,
+                "message": None,
+            },
+            {
+                "order": {
+                    "symbol": "272580",
+                    "price": 100,
+                    "quantity": 148,
+                    "side": "BUY",
+                    "order_type": "MARKET",
+                },
+                "success": True,
+                "message": None,
+            },
+        ],
+    }
     app.dependency_overrides.clear()
 
 
