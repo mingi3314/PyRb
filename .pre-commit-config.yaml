@@ -24,4 +24,5 @@ repos:
             types-PyYAML===6.0.12.12,
             types-toml===0.10.8.7,
             fastapi==0.109.2,
+            freezegun==1.4.0,
           ]
