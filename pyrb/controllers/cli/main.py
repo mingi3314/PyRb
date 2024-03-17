@@ -43,9 +43,9 @@ def holding_portfolio(
     context = _create_context()
 
     strategy = HoldingPortfolioRebalanceStrategy(context)
-    rebalancer = Rebalancer(context, strategy)
+    rebalancer = Rebalancer(context)
 
-    orders = rebalancer.prepare_orders(investment_amount=investment_amount)
+    orders = rebalancer.prepare_orders(strategy=strategy, investment_amount=investment_amount)
     _place_orders(context, rebalancer, orders)
 
 
@@ -78,9 +78,9 @@ def explicit_target(
 
     targets = read_targets_from_source(targets_source)
     strategy = ExplicitTargetRebalanceStrategy(targets)
-    rebalancer = Rebalancer(context, strategy)
+    rebalancer = Rebalancer(context)
 
-    orders = rebalancer.prepare_orders(investment_amount=investment_amount)
+    orders = rebalancer.prepare_orders(strategy=strategy, investment_amount=investment_amount)
     _place_orders(context, rebalancer, orders)
 
 
@@ -96,9 +96,9 @@ def asset_allocate(
     context = _create_context()
 
     strategy = AssetAllocationStrategyFactory.create(strategy)
-    rebalancer = Rebalancer(context, strategy)
+    rebalancer = Rebalancer(context)
 
-    orders = rebalancer.prepare_orders(investment_amount=investment_amount)
+    orders = rebalancer.prepare_orders(strategy=strategy, investment_amount=investment_amount)
     _place_orders(context, rebalancer, orders)
 
 

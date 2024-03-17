@@ -13,11 +13,10 @@ from pyrb.services.strategy.base import Strategy
 
 
 class Rebalancer:
-    def __init__(self, context: RebalanceContext, strategy: Strategy) -> None:
+    def __init__(self, context: RebalanceContext) -> None:
         self._context = context
-        self._strategy = strategy
 
-    def prepare_orders(self, investment_amount: float) -> list[Order]:
+    def prepare_orders(self, strategy: Strategy, investment_amount: float) -> list[Order]:
         """
         Prepare a list of orders to rebalance the portfolio based on the given investment amount.
         If the investment amount is greater than the total value of the portfolio, an exception
@@ -51,7 +50,7 @@ class Rebalancer:
 
         self._validate_investment_amount(investment_amount)
 
-        weight_by_stock = self._strategy.create_target_weights()
+        weight_by_stock = strategy.create_target_weights()
 
         current_prices = _fetch_current_prices(self._context, weight_by_stock)
         orders: list[Order] = []
