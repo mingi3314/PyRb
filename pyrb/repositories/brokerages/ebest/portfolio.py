@@ -1,7 +1,10 @@
+import datetime
 from typing import Any
+from zoneinfo import ZoneInfo
 
-from pydantic import NonNegativeFloat
+from pydantic import AwareDatetime, NonNegativeFloat
 
+from pyrb.models.portfolio import PortfolioReturn
 from pyrb.models.position import Asset, Position
 from pyrb.repositories.brokerages.base.portfolio import Portfolio
 from pyrb.repositories.brokerages.ebest.client import EbestAPIClient
@@ -55,6 +58,35 @@ class EbestPortfolio(Portfolio):
     def get_position_amount(self, symbol: str) -> NonNegativeFloat:
         position = self.get_position(symbol)
         return position.total_amount if position else 0
+
+    def fetch_returns(
+        self, start_date: AwareDatetime, end_date: AwareDatetime
+    ) -> list[PortfolioReturn]:
+        path = "stock/accno"
+        content_type = "application/json; charset=UTF-8"
+
+        headers = {"content-type": content_type, "tr_cd": "FOCCQ33600", "tr_cont": "N"}
+
+        body = {
+            "FOCCQ33600InBlock1": {
+                "QrySrtDt": start_date.strftime("%Y%m%d"),
+                "QryEndDt": end_date.strftime("%Y%m%d"),
+                "TermTp": "1",
+            }
+        }
+
+        response = self._api_client.send_request("POST", path, headers=headers, json=body)
+        print(response.json())
+        return [
+            PortfolioReturn(
+                dt=datetime.datetime.strptime(each["BaseDt"], "%Y%m%d").replace(
+                    tzinfo=ZoneInfo("Asia/Seoul")
+                ),
+                rtn=float(each["TermErnrat"]) / 100,
+                pnl=each["EvalPnlAmt"],
+            )
+            for each in response.json()["FOCCQ33600OutBlock3"]
+        ]
 
     def refresh(self) -> None:
         self._serialized_portfolio = self._fetch_portfolio()

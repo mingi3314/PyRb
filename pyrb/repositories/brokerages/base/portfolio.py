@@ -1,7 +1,8 @@
 import abc
 
-from pydantic import NonNegativeFloat
+from pydantic import AwareDatetime, NonNegativeFloat
 
+from pyrb.models.portfolio import PortfolioReturn
 from pyrb.models.position import Position
 
 
@@ -70,6 +71,21 @@ class Portfolio(abc.ABC):
 
         Returns:
             NonNegativeFloat: The total amount of the position for the given symbol.
+        """
+        ...
+
+    @abc.abstractmethod
+    def fetch_returns(
+        self, start_dt: AwareDatetime, end_dt: AwareDatetime
+    ) -> list[PortfolioReturn]:
+        """Fetches the returns of the portfolio for the given period.
+
+        Args:
+            start_dt (AwareDatetime): The start date of the period.
+            end_dt (AwareDatetime): The end date of the period.
+
+        Returns:
+            list[PortfolioReturn]: A list of PortfolioReturn objects.
         """
         ...
 

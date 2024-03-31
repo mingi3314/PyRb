@@ -1,10 +1,12 @@
 import tempfile
 from collections.abc import Generator
+from datetime import datetime
 from pathlib import Path
 
 import pytest
 
 from pyrb.models.order import Order
+from pyrb.models.portfolio import PortfolioReturn
 from pyrb.models.position import Asset, Position
 from pyrb.models.price import CurrentPrice
 from pyrb.repositories.account import AccountRepository, LocalConfigAccountRepository
@@ -61,6 +63,9 @@ class FakePortfolio(Portfolio):
     def get_position_amount(self, symbol: str) -> float:
         position = self.get_position(symbol)
         return position.total_amount if position else 0
+
+    def fetch_returns(self, start_dt: datetime, end_dt: datetime) -> list[PortfolioReturn]:
+        return [PortfolioReturn(dt=start_dt, rtn=0.0, pnl=0.0)]
 
     def refresh(self) -> None: ...
 

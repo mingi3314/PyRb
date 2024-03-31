@@ -2,7 +2,7 @@ import datetime
 from uuid import UUID
 from zoneinfo import ZoneInfo
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import AwareDatetime, BaseModel
 from starlette.status import HTTP_201_CREATED
@@ -12,6 +12,7 @@ from pyrb.enums import AssetAllocationStrategyEnum, BrokerageType
 from pyrb.exceptions import InitializationError
 from pyrb.models.account import Account, AccountFactory
 from pyrb.models.order import Order, OrderPlacementResult
+from pyrb.models.portfolio import PortfolioReturn
 from pyrb.models.position import Position
 from pyrb.services.rebalance import Rebalancer
 from pyrb.services.strategy.asset_allocate import AssetAllocationStrategyFactory
@@ -50,6 +51,12 @@ class PortfolioResponse(BaseModel):
     total_value: float
     cash_balance: float
     positions: list[Position]
+
+
+class PortfolioReturnsResponse(BaseModel):
+    start_dt: AwareDatetime
+    end_dt: AwareDatetime
+    returns: list[PortfolioReturn]
 
 
 class OrdersPrepareResponse(BaseModel):
@@ -95,6 +102,23 @@ async def get_portfolio(context: RebalanceContextDep) -> PortfolioResponse:
         total_value=portfolio.total_value,
         cash_balance=portfolio.cash_balance,
         positions=portfolio.positions,
+    )
+
+
+@app.get("/portfolio/returns", response_model=PortfolioReturnsResponse)
+async def fetch_portfolio_returns(
+    context: RebalanceContextDep,
+    start_dt: AwareDatetime = Query(),
+    end_dt: AwareDatetime = Query(
+        default_factory=lambda: datetime.datetime.now(ZoneInfo("Asia/Seoul"))
+    ),
+) -> PortfolioReturnsResponse:
+    returns = context.portfolio.fetch_returns(start_dt, end_dt)
+
+    return PortfolioReturnsResponse(
+        start_dt=start_dt,
+        end_dt=end_dt,
+        returns=returns,
     )
 
 
