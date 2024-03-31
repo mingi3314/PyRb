@@ -10,15 +10,15 @@ from pyrb.repositories.brokerages.ebest.client import EbestAPIClient
 class EbestPortfolio(Portfolio):
     def __init__(self, api_client: EbestAPIClient) -> None:
         self._api_client = api_client
-        self._serialized_portfolio: dict[str, Any] = self._fetch_portfolio()
+        self._serialized_portfolio: dict[str, Any] | None = None
 
     @property
     def total_value(self) -> NonNegativeFloat:
-        return self._serialized_portfolio["t0424OutBlock"]["sunamt"]
+        return self.serialized_portfolio["t0424OutBlock"]["sunamt"]
 
     @property
     def cash_balance(self) -> NonNegativeFloat:
-        return self._serialized_portfolio["CSPAQ12200OutBlock2"]["D2Dps"]
+        return self.serialized_portfolio["CSPAQ12200OutBlock2"]["D2Dps"]
 
     @property
     def positions(self) -> list[Position]:
@@ -32,7 +32,7 @@ class EbestPortfolio(Portfolio):
                 rtn=float(item["sunikrt"]) / 100,
                 profit=item["dtsunik"],
             )
-            for item in self._serialized_portfolio["t0424OutBlock1"]
+            for item in self.serialized_portfolio["t0424OutBlock1"]
         ]
 
         return positions
@@ -40,6 +40,12 @@ class EbestPortfolio(Portfolio):
     @property
     def holding_symbols(self) -> list[str]:
         return [position.asset.symbol for position in self.positions]
+
+    @property
+    def serialized_portfolio(self) -> dict[str, Any]:
+        if self._serialized_portfolio is None:
+            self._serialized_portfolio = self._fetch_portfolio()
+        return self._serialized_portfolio
 
     def get_position(self, symbol: str) -> Position | None:
         return next(
