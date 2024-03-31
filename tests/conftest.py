@@ -36,6 +36,7 @@ class FakePortfolio(Portfolio):
                 average_buy_price=100,
                 total_amount=10000,
                 rtn=0.0,
+                profit=0.0,
             ),
             Position(
                 asset=Asset(symbol="005930", label="삼성전자"),
@@ -44,6 +45,7 @@ class FakePortfolio(Portfolio):
                 average_buy_price=150,
                 total_amount=7500,
                 rtn=0.0,
+                profit=0.0,
             ),
         ]
 
