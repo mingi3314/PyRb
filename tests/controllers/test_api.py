@@ -259,6 +259,20 @@ def test_get_portfolio(fake_rebalance_context: RebalanceContext) -> None:
     app.dependency_overrides.clear()
 
 
+def test_fetch_portfolio_returns(fake_rebalance_context: RebalanceContext) -> None:
+    # Given
+    create_account()
+    app.dependency_overrides[context_dep] = lambda: fake_rebalance_context
+
+    # When
+    response = client.get("/portfolio/returns?start_dt=2024-01-01T00:00:00.009Z")
+
+    # Then
+    assert response.status_code == 200
+    data = response.json()
+    assert "returns" in data
+
+
 def test_get_portfolio_without_account() -> None:
     # When
     response = client.get("/portfolio")
