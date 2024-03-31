@@ -240,6 +240,7 @@ def test_get_portfolio(fake_rebalance_context: RebalanceContext) -> None:
                 "average_buy_price": 100,
                 "total_amount": 10000,
                 "rtn": 0.0,
+                "profit": 0,
             },
             {
                 "asset": {"symbol": "005930", "label": "삼성전자", "asset_class": "STOCK"},
@@ -248,6 +249,7 @@ def test_get_portfolio(fake_rebalance_context: RebalanceContext) -> None:
                 "average_buy_price": 150,
                 "total_amount": 7500,
                 "rtn": 0.0,
+                "profit": 0,
             },
         ],
     }

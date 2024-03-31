@@ -30,6 +30,7 @@ class EbestPortfolio(Portfolio):
                 average_buy_price=item["pamt"],
                 total_amount=item["appamt"],
                 rtn=float(item["sunikrt"]) / 100,
+                profit=item["dtsunik"],
             )
             for item in self._serialized_portfolio["t0424OutBlock1"]
         ]
