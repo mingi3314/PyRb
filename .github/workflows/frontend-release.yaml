@@ -1,0 +1,49 @@
+name: Automated Frontend Release Process
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "frontend/**"
+
+jobs:
+  create-release-and-publish:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v5
+
+      - name: Determine Version Change
+        id: version_check
+        run: |
+          VERSION="frontend@v$(node -p "require('./package.json').version")"
+          echo "Current version: $VERSION"
+
+          LATEST_RELEASE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/releases?per_page=5" | \
+            jq -r '.[] | select(.tag_name | startswith("frontend@v")).tag_name' | head -n 1)
+          echo "Latest release version: $LATEST_RELEASE"
+
+          if [ "$VERSION" != "$LATEST_RELEASE" ]; then
+            echo "Version has changed."
+            echo "version_changed=true" >> $GITHUB_OUTPUT
+            echo "new_version=$VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "No version change detected."
+            echo "version_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Release
+        if: steps.version_check.outputs.version_changed == 'true'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version_check.outputs.new_version }}
+          generate_release_notes: True
