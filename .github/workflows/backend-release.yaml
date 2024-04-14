@@ -1,13 +1,18 @@
-name: Automated Release Process
+name: Automated Backend Release Process
 
 on:
   push:
     branches:
       - main
+    paths:
+      - "backend/**"
 
 jobs:
   create-release-and-publish:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
 
     steps:
       - name: Checkout repository
@@ -29,11 +34,12 @@ jobs:
       - name: Determine Version Change
         id: version_check
         run: |
-          VERSION="v$(poetry version -s)"
+          VERSION="backend@v$(poetry version -s)"
           echo "Current version: $VERSION"
 
           LATEST_RELEASE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r '.tag_name')
+            "https://api.github.com/repos/${{ github.repository }}/releases?per_page=5" | \
+            jq -r '.[] | select(.tag_name | startswith("backend@")).tag_name' | head -n 1)
           echo "Latest release version: $LATEST_RELEASE"
 
           if [ "$VERSION" != "$LATEST_RELEASE" ]; then
