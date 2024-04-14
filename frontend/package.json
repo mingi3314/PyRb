@@ -10,9 +10,6 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.5.1",
-    "@fortawesome/free-solid-svg-icons": "^6.5.1",
-    "@fortawesome/vue-fontawesome": "^3.0.6",
     "@tauri-apps/api": "^1.5.2",
     "axios": "^1.6.7",
     "primeflex": "^3.3.1",
