@@ -31,7 +31,7 @@ class EbestOrderManager(OrderManager):
             "CSPAT00601InBlock1": {
                 "IsuNo": order.symbol,
                 "OrdQty": order.quantity,
-                "OrdPrc": order.price,
+                "OrdPrc": order.price if not order.order_type == OrderType.MARKET else 0,
                 "BnsTpCode": "2" if order.side == "BUY" else "1",
                 "OrdprcPtnCode": self._order_type_mapping[order.order_type],
                 "MgntrnCode": "000",
