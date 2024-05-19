@@ -51,18 +51,21 @@ jobs:
             echo "version_changed=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Checkout repository for reusable workflows
+        uses: actions/checkout@v4
+
       - name: Call Reusable Workflow to Build Backend for Linux
-        uses: ./.github/workflows/build-backend-executable.yaml
+        uses: .github/workflows/build-backend-executable.yaml
         with:
           platform: linux
 
       - name: Call Reusable Workflow to Build Backend for macOS
-        uses: ./.github/workflows/build-backend-executable.yaml
+        uses: .github/workflows/build-backend-executable.yaml
         with:
           platform: macos
 
       - name: Call Reusable Workflow to Build Backend for Windows
-        uses: ./.github/workflows/build-backend-executable.yaml
+        uses: .github/workflows/build-backend-executable.yaml
         with:
           platform: windows
 
