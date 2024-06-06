@@ -52,17 +52,17 @@ jobs:
           fi
 
       - name: Call Reusable Workflow to Build Backend for Linux
-        uses: ./.github/workflows/build-backend-executable.yaml
+        uses: mingi3314/PyRb/.github/workflows/build-backend-executable.yaml@main
         with:
           platform: linux
 
       - name: Call Reusable Workflow to Build Backend for macOS
-        uses: ./.github/workflows/build-backend-executable.yaml
+        uses: mingi3314/PyRb/.github/workflows/build-backend-executable.yaml@main
         with:
           platform: macos
 
       - name: Call Reusable Workflow to Build Backend for Windows
-        uses: ./.github/workflows/build-backend-executable.yaml
+        uses: mingi3314/PyRb/.github/workflows/build-backend-executable.yaml@main
         with:
           platform: windows
 
