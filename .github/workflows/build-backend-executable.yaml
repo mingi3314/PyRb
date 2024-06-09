@@ -28,7 +28,8 @@ jobs:
               apt-get install -y python3.11 python3.11-venv python3.11-dev && \
               curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11 && \
               pip3.11 install pyinstaller && \
-              pyinstaller -c -F --clean --name run-server-x86_64-unknown-linux-gnu backend/pyrb/controllers/api/main.py && \
+              pyinstaller --clean -F --name run-server-x86_64-unknown-linux-gnu backend/pyrb/controllers/api/main.py && \
+              mkdir -p frontend/src-tauri/bin/ && \
               cp backend/dist/run-server-x86_64-unknown-linux-gnu frontend/src-tauri/bin/"
 
   build-backend-macos:
@@ -49,7 +50,8 @@ jobs:
 
       - name: Build backend executable
         run: |
-          pyinstaller -c -F --clean --name run-server-aarch64-apple-darwin backend/pyrb/controllers/api/main.py
+          pyinstaller --clean -F --name run-server-aarch64-apple-darwin backend/pyrb/controllers/api/main.py
+          mkdir -p frontend/src-tauri/bin/
           cp backend/dist/run-server-aarch64-apple-darwin frontend/src-tauri/bin/
 
   build-backend-windows:
@@ -70,5 +72,6 @@ jobs:
 
       - name: Build backend executable
         run: |
-          pyinstaller -c -F --clean --name run-server-x86_64-pc-windows-msvc backend/pyrb/controllers/api/main.py
+          pyinstaller --clean -F --name run-server-x86_64-pc-windows-msvc backend/pyrb/controllers/api/main.py
+          mkdir -p frontend/src-tauri/bin/
           cp backend/dist/run-server-x86_64-pc-windows-msvc.exe frontend/src-tauri/bin/

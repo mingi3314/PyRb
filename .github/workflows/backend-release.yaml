@@ -51,21 +51,6 @@ jobs:
             echo "version_changed=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Call Reusable Workflow to Build Backend for Linux
-        uses: mingi3314/PyRb/.github/workflows/build-backend-executable.yaml@main
-        with:
-          platform: linux
-
-      - name: Call Reusable Workflow to Build Backend for macOS
-        uses: mingi3314/PyRb/.github/workflows/build-backend-executable.yaml@main
-        with:
-          platform: macos
-
-      - name: Call Reusable Workflow to Build Backend for Windows
-        uses: mingi3314/PyRb/.github/workflows/build-backend-executable.yaml@main
-        with:
-          platform: windows
-
       - name: Create Release
         if: steps.version_check.outputs.version_changed == 'true'
         uses: softprops/action-gh-release@v1
@@ -82,3 +67,30 @@ jobs:
         run: |
           poetry build
           poetry publish
+
+      - name: Trigger Build Executables
+        if: steps.version_check.outputs.version_changed == 'true'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'build-backend-executable.yaml',
+              ref: context.ref,
+              inputs: { platform: 'linux' }
+            })
+            github.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'build-backend-executable.yaml',
+              ref: context.ref,
+              inputs: { platform: 'macos' }
+            })
+            github.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'build-backend-executable.yaml',
+              ref: context.ref,
+              inputs: { platform: 'windows' }
+            })
