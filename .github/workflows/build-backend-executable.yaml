@@ -7,6 +7,16 @@ on:
         description: "Target platform for the build"
         required: true
         type: string
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: "Target platform for the build"
+        required: true
+        type: choice
+        options:
+          - linux
+          - macos
+          - windows
 
 jobs:
   build-backend-linux:
@@ -16,24 +26,36 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v1
+      - name: Install Poetry
+        run: python -m pip install --upgrade pip poetry
 
-      - name: Build executable in Docker
+      - name: Build backend executable (PyInstaller)
+        working-directory: backend
         run: |
-          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace \
-            ubuntu:18.04 /bin/bash -c "\
-              apt-get update && \
-              apt-get install -y python3.11 python3.11-venv python3.11-dev && \
-              curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11 && \
-              pip3.11 install pyinstaller && \
-              pyinstaller --clean -F --name run-server-x86_64-unknown-linux-gnu backend/pyrb/controllers/api/main.py && \
-              mkdir -p frontend/src-tauri/bin/ && \
-              cp backend/dist/run-server-x86_64-unknown-linux-gnu frontend/src-tauri/bin/"
+          poetry install --only main
+          poetry run pyinstaller --clean -F \
+            --distpath dist \
+            --name run-server-x86_64-unknown-linux-gnu \
+            pyrb/controllers/api/main.py
+
+      - name: Copy executable into Tauri sidecar bin/
+        run: |
+          mkdir -p frontend/src-tauri/bin/
+          cp backend/dist/run-server-x86_64-unknown-linux-gnu frontend/src-tauri/bin/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: run-server-x86_64-unknown-linux-gnu
+          path: frontend/src-tauri/bin/run-server-x86_64-unknown-linux-gnu
 
   build-backend-macos:
-    runs-on: macos-12
+    runs-on: macos-13
     if: ${{ inputs.platform == 'macos' }}
 
     steps:
@@ -41,18 +63,32 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install PyInstaller
-        run: pip install pyinstaller
+      - name: Install Poetry
+        run: python -m pip install --upgrade pip poetry
 
       - name: Build backend executable
+        working-directory: backend
         run: |
-          pyinstaller --clean -F --name run-server-aarch64-apple-darwin backend/pyrb/controllers/api/main.py
+          poetry install --only main
+          poetry run pyinstaller --clean -F \
+            --distpath dist \
+            --name run-server-x86_64-apple-darwin \
+            pyrb/controllers/api/main.py
+
+      - name: Copy executable into Tauri sidecar bin/
+        run: |
           mkdir -p frontend/src-tauri/bin/
-          cp backend/dist/run-server-aarch64-apple-darwin frontend/src-tauri/bin/
+          cp backend/dist/run-server-x86_64-apple-darwin frontend/src-tauri/bin/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: run-server-x86_64-apple-darwin
+          path: frontend/src-tauri/bin/run-server-x86_64-apple-darwin
 
   build-backend-windows:
     runs-on: windows-2019
@@ -63,15 +99,31 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install PyInstaller
-        run: pip install pyinstaller
+      - name: Install Poetry
+        run: python -m pip install --upgrade pip poetry
 
       - name: Build backend executable
+        shell: bash
+        working-directory: backend
         run: |
-          pyinstaller --clean -F --name run-server-x86_64-pc-windows-msvc backend/pyrb/controllers/api/main.py
+          poetry install --only main
+          poetry run pyinstaller --clean -F \
+            --distpath dist \
+            --name run-server-x86_64-pc-windows-msvc \
+            pyrb/controllers/api/main.py
+
+      - name: Copy executable into Tauri sidecar bin/
+        shell: bash
+        run: |
           mkdir -p frontend/src-tauri/bin/
           cp backend/dist/run-server-x86_64-pc-windows-msvc.exe frontend/src-tauri/bin/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: run-server-x86_64-pc-windows-msvc
+          path: frontend/src-tauri/bin/run-server-x86_64-pc-windows-msvc.exe
