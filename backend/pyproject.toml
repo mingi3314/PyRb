@@ -1,41 +1,56 @@
-[tool.poetry]
+[project]
 name = "pyrb"
 version = "0.10.10"
 description = "Python Rebalancer"
-authors = ["Minki Kim <mingi3314@gmail.com>"]
+authors = [{ name = "Minki Kim", email = "mingi3314@gmail.com" }]
+requires-python = ">=3.8, <3.13"
 readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "click>=8.1.6,<9",
+    "pydantic>=2.1.1,<3",
+    "requests>=2.31.0,<3",
+    "pydantic-settings>=2.0.3,<3",
+    "typer[all]>=0.9.0,<0.10",
+    "toml>=0.10.2,<0.11",
+    "pyyaml>=6.0.1,<7",
+    "fastapi>=0.109.2,<0.110",
+    "uvicorn[standard]>=0.27.1,<0.28",
+]
 
-[tool.poetry.scripts]
+[project.scripts]
 pyrb = "pyrb.controllers.cli.main:app"
 
-[tool.poetry.dependencies]
-python = ">=3.8, <3.13"
-click = "^8.1.6"
-pydantic = "^2.1.1"
-requests = "^2.31.0"
-pydantic-settings = "^2.0.3"
-typer = { extras = ["all"], version = "^0.9.0" }
-toml = "^0.10.2"
-pyyaml = "^6.0.1"
-fastapi = "^0.109.2"
-uvicorn = { extras = ["standard"], version = "^0.27.1" }
+[dependency-groups]
+dev = [
+    "ruff==0.15.0",
+    "pytest>=7.4.0,<8",
+    "pytest-mock>=3.11.1,<4",
+    "types-requests>=2.31.0.2,<3",
+    "types-pyyaml>=6.0.12.12,<7",
+    "types-toml>=0.10.8.7,<0.11",
+    "httpx>=0.27.0,<0.28",
+    "pyinstaller>=6.4.0,<7",
+    "freezegun>=1.4.0,<2",
+    "preq>=0.1.0",
+    "mypy==1.14.1",
+]
 
-[tool.poetry.group.dev.dependencies]
-ruff = "0.2.1"
-mypy = "1.8.0"
-pre-commit = "^3.3.3"
-pytest = "^7.4.0"
-pytest-mock = "^3.11.1"
-types-requests = "^2.31.0.2"
-types-pyyaml = "^6.0.12.12"
-types-toml = "^0.10.8.7"
-httpx = "^0.27.0"
-pyinstaller = "^6.4.0"
-freezegun = "^1.4.0"
+[tool.uv]
+
+[tool.uv.build-backend]
+module-root = ""
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.9.24,<0.10.0"]
+build-backend = "uv_build"
 
 [tool.ruff]
 line-length = 100
@@ -77,15 +92,13 @@ extend-immutable-calls = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["alphaship", "alphaverse"]
 known-third-party = ["fastapi", "pydantic", "starlette"]
 
 [tool.ruff.format]
 preview = true
 
 [tool.mypy]
-python_version = "3.11"
-ignore_missing_imports = true
+python_version = "3.12"
 disallow_any_generics = true
 disallow_untyped_calls = true
 disallow_untyped_defs = true
