@@ -3,4 +3,4 @@
 set -e
 
 # use pre-commit
-pre-commit install
+uv run preq install
